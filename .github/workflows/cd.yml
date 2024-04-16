@@ -1,0 +1,70 @@
+name: Continuous Deployment (CD)
+
+on:
+  workflow_run:
+    workflows:
+      - "Continuous Integration (CI)"
+    branches:
+      - main
+    types:
+      - completed
+
+jobs:
+  build:
+    name: Cloud Run Deployment
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          export_environment_variables: true
+          create_credentials_file: true
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Setup GCP Service Account
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Use gcloud CLI
+        run: gcloud info
+
+      - name: Configure Docker
+        run: |
+          gcloud auth configure-docker
+
+      - name: Build
+        run: |
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/heymart-store .
+
+      - name: Push
+        run: |
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/heymart-store
+
+      - name: Deploy
+        id: 'deploy'
+        uses: 'google-github-actions/deploy-cloudrun@v2'
+        with:
+          service: 'heymart-store'
+          image: gcr.io/${{ secrets.GCP_PROJECT_ID }}/heymart-store
+          region: asia-southeast2
+          timeout: 15m
+          env_vars: |
+            PG_HOST=${{ secrets.PG_HOST }}
+            PG_USERNAME=${{ secrets.PG_USERNAME }}
+            PG_PASSWORD=${{ secrets.PG_PASSWORD }}
+#      - name: Deploy
+#        run: |
+#          gcloud run deploy heymart-store \
+#          --region asia-southeast2 \
+#          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/heymart-store \
+#          --platform managed \
+#          --allow-unauthenticated \
+#          --project ${{ secrets.GCP_PROJECT_ID }} \
+#          --set-env-vars=PG_HOST=${{ secrets.PG_HOST }} \
+#          --set-env-vars=PG_USERNAME=${{ secrets.PG_USERNAME }} \
+#          --set-env-vars=PG_PASSWORD=${{ secrets.PG_PASSWORD }}
