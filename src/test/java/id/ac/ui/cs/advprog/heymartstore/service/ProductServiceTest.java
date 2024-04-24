@@ -44,16 +44,16 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void testCreateProduct(String name, Long price, Integer stock) {
+    public void testCreateProduct() {
         Product product = new ProductBuilder()
-                .setName(name)
-                .setPrice(price)
-                .setStock(stock)
+                .setName("Indomie")
+                .setPrice(10000L)
+                .setStock(10)
                 .build();
         productList.add(product);
-        assertEquals(productList.getFirst().getName(), name);
-        assertEquals(productList.getFirst().getPrice(), price);
-        assertEquals(productList.getFirst().getStock(), stock);
+        assertEquals(productList.getFirst().getName(),"Indomie");
+        assertEquals(productList.getFirst().getPrice(), 10000L);
+        assertEquals(productList.getFirst().getStock(), 10);
 
     }
 }
