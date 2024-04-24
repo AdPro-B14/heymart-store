@@ -36,7 +36,7 @@ public class SupermarketServiceTest {
     }
     @Test
     void testAddManagerValid() {
-        supermarketService.addManager("arvin@gmail.com");
+        supermarketService.addManager(1L, "arvin@gmail.com");
 
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
         assertEquals("arvin@gmail.com", supermarketService.getSupermarket(1L).getManagers().getFirst());
