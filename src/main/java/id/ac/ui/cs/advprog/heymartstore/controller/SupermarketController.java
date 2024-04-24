@@ -5,6 +5,7 @@ import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.service.SupermarketService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,9 @@ import java.util.ArrayList;
 @RequestMapping("/api/supermarket")
 @RequiredArgsConstructor
 public class SupermarketController {
+    @Value("${spring.route.auth_base_url}")
+    private String AUTH_BASE_URL;
+
     private final SupermarketService supermarketService;
     private final WebClient webClient;
 
@@ -28,11 +32,11 @@ public class SupermarketController {
         response.id = supermarket.getId();
         response.name = supermarket.getName();
         response.managers = new ArrayList<>();
-
+        System.out.println(AUTH_BASE_URL);
         for (String managerId : supermarket.getManagers()) {
             System.out.println(managerId);
             GetProfileResponse profileResponse = webClient.get()
-                    .uri("http://localhost:3031/api/user/profile",
+                    .uri(AUTH_BASE_URL + "/api/user/profile",
                             uriBuilder -> uriBuilder.queryParam("email", managerId).build())
                     .retrieve()
                     .bodyToMono(GetProfileResponse.class)
