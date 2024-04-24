@@ -1,19 +1,30 @@
 package id.ac.ui.cs.advprog.heymartstore.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-@Builder
+@Data
+@Entity
+@Table(name = "supermarket")
 @Getter
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Supermarket {
-    private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     private String name;
 
+    @ElementCollection
+    private List<String> managers;
+
+    @Transient
     private List<Product> products;
 
     public void addProduct(Product product) {

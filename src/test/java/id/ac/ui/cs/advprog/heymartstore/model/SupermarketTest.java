@@ -12,7 +12,7 @@ public class SupermarketTest {
     @Test
     void testSupermarketBuild() {
         Supermarket supermarket = Supermarket.builder()
-                .id(1)
+                .id(1L)
                 .name("Alfamart Kutek")
                 .products(new ArrayList<Product>())
                 .build();

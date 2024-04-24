@@ -5,5 +5,5 @@ import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import java.util.Optional;
 
 public interface SupermarketRepository {
-    Optional<Supermarket> findById(Integer Id);
+    Optional<Supermarket> findById(Long Id);
 }
