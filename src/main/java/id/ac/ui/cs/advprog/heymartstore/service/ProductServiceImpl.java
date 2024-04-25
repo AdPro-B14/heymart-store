@@ -21,16 +21,20 @@ public class ProductServiceImpl implements ProductService {
 
     private String getRole() {
         GetProfileResponse response = webClient.get()
-                .uri("http://localhost:3032/")
+                .uri("http://localhost:3032/profile/")
                 .retrieve()
                 .bodyToMono(GetProfileResponse.class)
                 .block();
         return response.role;
     }
 
-    public Product createProduct(String name, Long price, Integer stock)  {
+    public boolean isManager() {
         String role = getRole();
-        if (role.equals("MANAGER")) {
+        return role.equals("MANAGER");
+    }
+
+    public Product createProduct(String name, Long price, Integer stock)  {
+        if (isManager()) {
             Product product = new ProductBuilder()
                     .setName(name)
                     .setStock(stock)
@@ -43,8 +47,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public Product editProduct(String UUID, Product changeAttribute) {
-        String role = getRole();
-        if (role.equals("MANAGER")) {
+        if (isManager()) {
             Product product = productRepository.findById(UUID).orElseThrow();
             product.setName(changeAttribute.getName());
             product.setPrice(changeAttribute.getPrice());
@@ -55,8 +58,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public Product deleteProduct(String UUID) {
-        String role = getRole();
-        if (role.equals("MANAGER")) {
+        if (isManager()) {
             Product product = productRepository.findById(UUID).orElseThrow();
             productRepository.delete(product);
             return product;
