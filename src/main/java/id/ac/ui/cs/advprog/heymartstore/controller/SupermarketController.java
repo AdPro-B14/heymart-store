@@ -1,7 +1,9 @@
 package id.ac.ui.cs.advprog.heymartstore.controller;
 
 import id.ac.ui.cs.advprog.heymartstore.dto.*;
+import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
+import id.ac.ui.cs.advprog.heymartstore.service.ProductService;
 import id.ac.ui.cs.advprog.heymartstore.service.SupermarketService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
@@ -15,13 +17,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("/api/supermarket")
+@RequestMapping("/supermarket")
 @RequiredArgsConstructor
 public class SupermarketController {
     @Value("${spring.route.auth_base_url}")
     private String AUTH_BASE_URL;
 
     private final SupermarketService supermarketService;
+    private final ProductService productService;
+
     private final WebClient webClient;
 
     @GetMapping("/profile")
@@ -32,9 +36,7 @@ public class SupermarketController {
         response.id = supermarket.getId();
         response.name = supermarket.getName();
         response.managers = new ArrayList<>();
-        System.out.println(AUTH_BASE_URL);
         for (String managerId : supermarket.getManagers()) {
-            System.out.println(managerId);
             GetProfileResponse profileResponse = webClient.get()
                     .uri(AUTH_BASE_URL + "/api/user/profile",
                             uriBuilder -> uriBuilder.queryParam("email", managerId).build())
@@ -61,6 +63,20 @@ public class SupermarketController {
         }
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/add-product")
+    public ResponseEntity<AddProductResponse> addProduct(@RequestHeader(value = "Authorization") String id,
+                                                         @RequestBody AddProductRequest request) {
+        Product product = Product.getBuilder()
+                .setName(request.getName())
+                .setPrice(request.getPrice())
+                .setStock(request.getStock())
+                .build();
+
+        Supermarket supermarket = supermarketService.addProduct(request.supermarketId, product);
+
+        return ResponseEntity.ok(AddProductResponse.builder().supermarketId(supermarket.getId()).productId(product.getId()).build());
     }
 
     @PostMapping("/create-supermarket")

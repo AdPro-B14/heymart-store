@@ -4,6 +4,7 @@ public class ProductBuilder {
     private String name;
     private Long price;
     private Integer stock;
+    private Supermarket supermarket;
 
     public ProductBuilder setName(String name) {
         if ((name == null) || name.isEmpty()) {
@@ -36,11 +37,21 @@ public class ProductBuilder {
         return this;
     }
 
+    public ProductBuilder setSupermarket(Supermarket supermarket) {
+        if (supermarket == null) {
+            throw new IllegalArgumentException();
+        }
+
+        this.supermarket = supermarket;
+        return this;
+    }
+
     public Product build() {
         Product product = new Product();
         product.setName(this.name);
         product.setPrice(this.price);
         product.setStock(this.stock);
+        product.setSupermarket(this.supermarket);
         return product;
     }
 

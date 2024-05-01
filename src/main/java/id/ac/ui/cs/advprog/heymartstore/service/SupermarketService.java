@@ -2,16 +2,19 @@ package id.ac.ui.cs.advprog.heymartstore.service;
 
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
+import id.ac.ui.cs.advprog.heymartstore.repository.ProductRepository;
 import id.ac.ui.cs.advprog.heymartstore.repository.SupermarketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 public class SupermarketService {
     private final SupermarketRepository supermarketRepository;
+    private final ProductRepository productRepository;
 
     public Supermarket addManager(Long supermarketId, String managerEmail) {
         Supermarket supermarket = supermarketRepository.findById(supermarketId).orElseThrow();
@@ -25,15 +28,16 @@ public class SupermarketService {
             throw new IllegalArgumentException();
         }
 
-        Supermarket supermarket = supermarketRepository.findById(supermarketId).orElseThrow();
+        Supermarket supermarket = getSupermarket(supermarketId);
 
         product.setSupermarket(supermarket);
         supermarket.getProducts().add(product);
 
-        return supermarket;
+        productRepository.save(product);
+        return supermarketRepository.save(supermarket);
     }
 
-    public Supermarket getSupermarket(Long id) {
+    public Supermarket getSupermarket(Long id) throws NoSuchElementException {
         return supermarketRepository.findById(id).orElseThrow();
     }
 
