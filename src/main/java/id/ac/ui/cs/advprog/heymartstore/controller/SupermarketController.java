@@ -17,8 +17,8 @@ import java.util.ArrayList;
 @RequestMapping("/supermarket")
 @RequiredArgsConstructor
 public class SupermarketController {
-    @Value("${spring.route.auth_base_url}")
-    private String AUTH_BASE_URL;
+    @Value("${spring.route.gateway_url}")
+    private String GATEWAY_URL;
 
     private final SupermarketService supermarketService;
     private final JwtService jwtService;
@@ -35,7 +35,7 @@ public class SupermarketController {
         response.managers = new ArrayList<>();
         for (String managerId : supermarket.getManagers()) {
             GetProfileResponse profileResponse = webClient.get()
-                    .uri(AUTH_BASE_URL + "/api/user/profile",
+                    .uri(GATEWAY_URL + "/api/user/profile",
                             uriBuilder -> uriBuilder.queryParam("email", managerId).build())
                     .retrieve()
                     .bodyToMono(GetProfileResponse.class)
