@@ -1,5 +1,5 @@
 package id.ac.ui.cs.advprog.heymartstore.dto;
 
-public class AddManagerResponse {
+public class SuccessResponse {
     public boolean success;
 }

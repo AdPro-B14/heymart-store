@@ -24,7 +24,15 @@ public class SupermarketService {
     }
 
     public Supermarket removeManager(Long supermarketId, String managerEmail) {
-        return null;
+        Supermarket supermarket = supermarketRepository.findById(supermarketId).orElseThrow();
+
+        if (!supermarket.getManagers().contains(managerEmail)) {
+            throw new IllegalArgumentException();
+        }
+
+        supermarket.getManagers().remove(managerEmail);
+        supermarketRepository.save(supermarket);
+        return supermarket;
     }
 
     public Supermarket addProduct(Long supermarketId, Product product) {
