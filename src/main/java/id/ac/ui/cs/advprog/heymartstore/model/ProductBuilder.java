@@ -6,7 +6,7 @@ public class ProductBuilder {
     private Integer stock;
 
     public ProductBuilder setName(String name) {
-        if ((name == null) || name == "") {
+        if ((name == null) || name.equals("")) {
             throw new IllegalArgumentException();
         }
 
@@ -47,7 +47,8 @@ public class ProductBuilder {
     private boolean stringValidation(String string) {
         for (int i = 0; i < string.length(); i++) {
             char c = string.charAt(i);
-            if (!Character.isLetterOrDigit(c)) {
+            System.out.println(c);
+            if (!Character.isLetterOrDigit(c) && c != ' ') {
                 return false;
             }
         }
