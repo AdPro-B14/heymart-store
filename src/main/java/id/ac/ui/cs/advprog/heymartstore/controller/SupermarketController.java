@@ -4,15 +4,10 @@ import id.ac.ui.cs.advprog.heymartstore.dto.*;
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.service.JwtService;
-import id.ac.ui.cs.advprog.heymartstore.service.ProductService;
 import id.ac.ui.cs.advprog.heymartstore.service.SupermarketService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authorization.event.AuthorizationDeniedEvent;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -112,7 +107,13 @@ public class SupermarketController {
     }
 
     @PostMapping("/create-supermarket")
-    public ResponseEntity<Supermarket> createSupermarket(CreateSupermarketRequest request) {
+    public ResponseEntity<Supermarket> createSupermarket(@RequestHeader(value = "Authorization") String id,
+                                                         @RequestBody CreateSupermarketRequest request) throws IllegalAccessException {
+        String token = id.replace("Bearer ", "");
+        if (!jwtService.extractRole(token).equalsIgnoreCase("admin")) {
+            throw new IllegalAccessException("You have no access.");
+        }
+
         return ResponseEntity.ok(supermarketService.createSupermarket(request.name));
     }
 }
