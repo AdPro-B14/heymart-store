@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.heymartstore.service;
 
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
+import id.ac.ui.cs.advprog.heymartstore.repository.ProductRepository;
 import id.ac.ui.cs.advprog.heymartstore.repository.SupermarketRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,9 @@ public class SupermarketServiceTest {
 
     @Mock
     private SupermarketRepository supermarketRepository;
+
+    @Mock
+    private ProductRepository productRepository;
 
     List<Supermarket> supermarketList = new ArrayList<>();
 
