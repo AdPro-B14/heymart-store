@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,6 +43,21 @@ public class SupermarketServiceTest {
         supermarket1.getManagers().add("williams@gmail.com");
 
         supermarketList.add(supermarket1);
+    }
+
+    @Test
+    void testCreateSupermarketValid() {
+        when(supermarketRepository.save(any())).thenReturn(supermarketList.getFirst());
+        when(supermarketRepository.findById(supermarketList.getFirst().getId()))
+                .thenReturn(Optional.of(supermarketList.getFirst()));
+        Supermarket supermarket = supermarketService.createSupermarket(supermarketList.getFirst().getName());
+
+        assertEquals(supermarket.getName(), supermarketService.getSupermarket(supermarket.getId()).getName());
+    }
+
+    @Test
+    void testCreateSupermarketNotValid() {
+        assertThrows(IllegalArgumentException.class, () -> supermarketService.createSupermarket(null));
     }
 
     @Test

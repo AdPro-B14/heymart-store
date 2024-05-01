@@ -54,6 +54,10 @@ public class SupermarketService {
     }
 
     public Supermarket createSupermarket(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        }
+
         Supermarket supermarket = new Supermarket();
         supermarket.setName(name);
         supermarket.setManagers(new ArrayList<>());
