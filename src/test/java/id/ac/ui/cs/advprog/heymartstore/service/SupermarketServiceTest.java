@@ -39,6 +39,7 @@ public class SupermarketServiceTest {
                 .name("Alfamart Kutek")
                 .managers(new ArrayList<>())
                 .products(new ArrayList<>()).build();
+        supermarket1.getManagers().add("williams@gmail.com");
 
         supermarketList.add(supermarket1);
     }
@@ -51,8 +52,35 @@ public class SupermarketServiceTest {
 
         supermarketService.addManager(1L, "arvin@gmail.com");
 
+        assertEquals(2, supermarketService.getSupermarket(1L).getManagers().size());
+        assertEquals("arvin@gmail.com", supermarketService.getSupermarket(1L).getManagers().getLast());
+    }
+
+    @Test
+    void testRemoveManagerValid() {
+        for (Supermarket supermarket : supermarketList) {
+            when(supermarketRepository.findById(supermarket.getId())).thenReturn(Optional.of(supermarket));
+        }
+
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
-        assertEquals("arvin@gmail.com", supermarketService.getSupermarket(1L).getManagers().getFirst());
+
+        supermarketService.removeManager(1L, "williams@gmail.com");
+
+        assertEquals(0, supermarketService.getSupermarket(1L).getManagers().size());
+    }
+
+    @Test
+    void testRemoveManagerNotValid() {
+        for (Supermarket supermarket : supermarketList) {
+            when(supermarketRepository.findById(supermarket.getId())).thenReturn(Optional.of(supermarket));
+        }
+
+        assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
+
+        assertThrows(IllegalArgumentException.class,
+                () -> supermarketService.removeManager(1L, "raissa@gmail.com"));
+
+        assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
     }
 
     @Test

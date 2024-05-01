@@ -23,6 +23,10 @@ public class SupermarketService {
         return supermarket;
     }
 
+    public Supermarket removeManager(Long supermarketId, String managerEmail) {
+        return null;
+    }
+
     public Supermarket addProduct(Long supermarketId, Product product) {
         if (product == null) {
             throw new IllegalArgumentException();
