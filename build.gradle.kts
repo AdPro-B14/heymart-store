@@ -26,6 +26,7 @@ var seleniumJavaVersion = "4.14.1"
 var seleniumJupiterVersion = "5.0.1"
 var webdrivermanagerVersion = "5.6.3"
 var junitJupiterVersion = "5.9.1"
+var jsonwebtokenVersion = "0.11.5"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -43,6 +44,13 @@ dependencies {
     testImplementation("io.github.bonigarcia:webdrivermanager:$webdrivermanagerVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
+    implementation("io.jsonwebtoken:jjwt-api:$jsonwebtokenVersion")
+    implementation("io.jsonwebtoken:jjwt-impl:$jsonwebtokenVersion")
+    implementation("io.jsonwebtoken:jjwt-jackson:$jsonwebtokenVersion")
+    implementation("org.springframework.security:spring-security-core")
+    implementation("org.springframework.security:spring-security-web")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
 }
 
 tasks.register<Test>("unitTest") {
