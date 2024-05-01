@@ -20,8 +20,17 @@ public class SupermarketService {
         return supermarket;
     }
 
-    public Supermarket addProduct(Long supermarketId, Product product) throws IllegalArgumentException {
-        return null;
+    public Supermarket addProduct(Long supermarketId, Product product) {
+        if (product == null) {
+            throw new IllegalArgumentException();
+        }
+
+        Supermarket supermarket = supermarketRepository.findById(supermarketId).orElseThrow();
+
+        product.setSupermarket(supermarket);
+        supermarket.getProducts().add(product);
+
+        return supermarket;
     }
 
     public Supermarket getSupermarket(Long id) {
@@ -31,7 +40,9 @@ public class SupermarketService {
     public Supermarket createSupermarket(String name) {
         Supermarket supermarket = new Supermarket();
         supermarket.setName(name);
-        supermarket.setManagers(new ArrayList<String>());
+        supermarket.setManagers(new ArrayList<>());
+        supermarket.setProducts(new ArrayList<>());
+
         return supermarketRepository.save(supermarket);
     }
 }

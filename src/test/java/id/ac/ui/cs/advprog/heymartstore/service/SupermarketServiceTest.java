@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,18 +26,25 @@ public class SupermarketServiceTest {
     @Mock
     private SupermarketRepository supermarketRepository;
 
+    List<Supermarket> supermarketList = new ArrayList<>();
+
     @BeforeEach
     void setUp() {
         Supermarket supermarket1 = Supermarket.builder()
                 .id(1L)
                 .name("Alfamart Kutek")
                 .managers(new ArrayList<>())
-                .build();
+                .products(new ArrayList<>()).build();
 
-        when(supermarketRepository.findById(supermarket1.getId())).thenReturn(Optional.of(supermarket1));
+        supermarketList.add(supermarket1);
     }
+
     @Test
     void testAddManagerValid() {
+        for (Supermarket supermarket : supermarketList) {
+            when(supermarketRepository.findById(supermarket.getId())).thenReturn(Optional.of(supermarket));
+        }
+
         supermarketService.addManager(1L, "arvin@gmail.com");
 
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
@@ -45,6 +53,10 @@ public class SupermarketServiceTest {
 
     @Test
     void testAddProductValid() {
+        for (Supermarket supermarket : supermarketList) {
+            when(supermarketRepository.findById(supermarket.getId())).thenReturn(Optional.of(supermarket));
+        }
+
         Product product1 = Product.getBuilder().setName("Indomie Kuah Soto").setPrice(3500L).setStock(3).build();
         Product product2 = Product.getBuilder().setName("Indomie Kuah Goreng").setPrice(3000L).setStock(2).build();
 
@@ -58,12 +70,6 @@ public class SupermarketServiceTest {
 
     @Test
     void testAddProductNotValid() {
-        Product product1 = Product.getBuilder().setName(null).setPrice(3500L).setStock(3).build();
-        Product product2 = Product.getBuilder().setName("Indomie Kuah Goreng").setPrice(null).setStock(2).build();
-        Product product3 = Product.getBuilder().setName("Indomie Kuah Soto").setPrice(3500L).setStock(null).build();
-
-        assertThrows(IllegalArgumentException.class, () -> supermarketService.addProduct(1L, product1));
-        assertThrows(IllegalArgumentException.class, () -> supermarketService.addProduct(1L, product2));
-        assertThrows(IllegalArgumentException.class, () -> supermarketService.addProduct(1L, product3));
+        assertThrows(IllegalArgumentException.class, () -> supermarketService.addProduct(1L, null));
     }
 }

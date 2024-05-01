@@ -5,14 +5,13 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Entity
 @Table(name = "supermarket")
 @Getter
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Supermarket {
     @Id
@@ -22,14 +21,8 @@ public class Supermarket {
     private String name;
 
     @ElementCollection
-    private List<String> managers;
+    private List<String> managers = new ArrayList<>();
 
-    @Transient
-    private List<Product> products;
-
-    public void addProduct(Product product) {
-    }
-
-    public void removeProduct(Product newProduct) {
-    }
+    @OneToMany(mappedBy = "supermarket", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products = new ArrayList<>();
 }
