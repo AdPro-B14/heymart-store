@@ -1,10 +1,10 @@
 package id.ac.ui.cs.advprog.heymartstore.service;
 
+import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.repository.SupermarketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 
@@ -18,6 +18,10 @@ public class SupermarketService {
         supermarket.getManagers().add(managerEmail);
         supermarketRepository.save(supermarket);
         return supermarket;
+    }
+
+    public Supermarket addProduct(Long supermarketId, Product product) throws IllegalArgumentException {
+        return null;
     }
 
     public Supermarket getSupermarket(Long id) {
