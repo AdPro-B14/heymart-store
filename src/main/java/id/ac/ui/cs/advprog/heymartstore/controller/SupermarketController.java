@@ -3,6 +3,7 @@ package id.ac.ui.cs.advprog.heymartstore.controller;
 import id.ac.ui.cs.advprog.heymartstore.dto.*;
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
+import id.ac.ui.cs.advprog.heymartstore.service.JwtService;
 import id.ac.ui.cs.advprog.heymartstore.service.ProductService;
 import id.ac.ui.cs.advprog.heymartstore.service.SupermarketService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.event.AuthorizationDeniedEvent;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -24,7 +26,7 @@ public class SupermarketController {
     private String AUTH_BASE_URL;
 
     private final SupermarketService supermarketService;
-    private final ProductService productService;
+    private final JwtService jwtService;
 
     private final WebClient webClient;
 
@@ -67,7 +69,12 @@ public class SupermarketController {
 
     @PostMapping("/add-product")
     public ResponseEntity<AddProductResponse> addProduct(@RequestHeader(value = "Authorization") String id,
-                                                         @RequestBody AddProductRequest request) {
+                                                         @RequestBody AddProductRequest request) throws IllegalAccessException {
+        String token = id.replace("Bearer ", "");
+        if (!jwtService.extractRole(token).equalsIgnoreCase("manager")) {
+            throw new IllegalAccessException("You have no access.");
+        }
+
         Product product = Product.getBuilder()
                 .setName(request.getName())
                 .setPrice(request.getPrice())
