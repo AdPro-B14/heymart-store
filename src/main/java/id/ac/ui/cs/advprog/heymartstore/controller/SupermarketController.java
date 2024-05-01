@@ -92,7 +92,7 @@ public class SupermarketController {
                                                          @RequestBody AddProductRequest request) throws IllegalAccessException {
         String token = id.replace("Bearer ", "");
         if (!jwtService.extractRole(token).equalsIgnoreCase("manager")
-                || !jwtService.extractRole(token).equalsIgnoreCase("admin")) {
+                && !jwtService.extractRole(token).equalsIgnoreCase("admin")) {
             throw new IllegalAccessException("You have no access.");
         }
 
