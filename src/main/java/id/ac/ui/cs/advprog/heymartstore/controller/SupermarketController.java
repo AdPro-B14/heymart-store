@@ -53,9 +53,6 @@ public class SupermarketController {
     }
 
     @PostMapping("/add-manager")
-    public ResponseEntity<AddManagerResponse> addManager(@RequestBody AddManagerRequest request) {
-        AddManagerResponse response = new AddManagerResponse();
-        System.out.println(request.supermarketId);
     public ResponseEntity<SuccessResponse> addManager(@RequestHeader(value = "Authorization") String id,
                                                       @RequestBody AddManagerRequest request) throws IllegalAccessException {
         String token = id.replace("Bearer ", "");
