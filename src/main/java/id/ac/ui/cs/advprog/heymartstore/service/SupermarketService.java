@@ -59,6 +59,10 @@ public class SupermarketService {
         return supermarketRepository.findById(id).orElseThrow();
     }
 
+    public List<Supermarket> getAllSupermarkets() {
+        return null;
+    }
+
     public Supermarket createSupermarket(String name) {
         if (name == null) {
             throw new IllegalArgumentException();

@@ -45,6 +45,15 @@ public class SupermarketServiceTest {
         supermarket1.getManagers().add("williams@gmail.com");
 
         supermarketList.add(supermarket1);
+
+        Supermarket supermarket2 = Supermarket.builder()
+                .id(2L)
+                .name("Indomaret Kukel")
+                .managers(new ArrayList<>())
+                .products(new ArrayList<>()).build();
+        supermarket2.getManagers().add("arvinciu@gmail.com");
+
+        supermarketList.add(supermarket2);
     }
 
     @Test
@@ -109,6 +118,17 @@ public class SupermarketServiceTest {
                 request));
         assertThrows(IllegalArgumentException.class, () -> supermarketService.editSupermarket(1L,
                 null));
+    }
+
+    @Test
+    void testGetAllSupermarketsValid() {
+        when(supermarketRepository.findAll())
+                .thenReturn(supermarketList);
+
+        assertEquals(supermarketList.size(), supermarketService.getAllSupermarkets().size());
+        for (int i=0; i<supermarketList.size(); i++) {
+            assertEquals(supermarketList.get(i), supermarketService.getAllSupermarkets().get(i));
+        }
     }
 
     @Test
