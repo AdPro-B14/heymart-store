@@ -49,7 +49,11 @@ public class SupermarketService {
         return supermarketRepository.save(supermarket);
     }
 
-    public Supermarket getSupermarket(Long id) throws NoSuchElementException {
+    public Supermarket getSupermarket(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException();
+        }
+
         return supermarketRepository.findById(id).orElseThrow();
     }
 
@@ -67,6 +71,10 @@ public class SupermarketService {
     }
 
     public Supermarket deleteSupermarket(Long id) {
-        return null;
+        Supermarket supermarket = getSupermarket(id);
+
+        supermarketRepository.delete(supermarket);
+
+        return supermarket;
     }
 }
