@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/supermarket")
@@ -116,5 +117,33 @@ public class SupermarketController {
         }
 
         return ResponseEntity.ok(supermarketService.createSupermarket(request.name));
+    }
+
+    @PutMapping("/edit-supermarket/{id}")
+    public ResponseEntity<Supermarket> editSupermarket(@RequestHeader(value = "Authorization") String id,
+                                                         @PathVariable("id") Long supermarketId,
+                                                         @RequestBody EditSupermarketRequest request) throws IllegalAccessException {
+        String token = id.replace("Bearer ", "");
+        if (!jwtService.extractRole(token).equalsIgnoreCase("admin")) {
+            throw new IllegalAccessException("You have no access.");
+        }
+
+        return ResponseEntity.ok(supermarketService.editSupermarket(supermarketId, request));
+    }
+
+    @DeleteMapping("/delete-supermarket/{id}")
+    public ResponseEntity<SuccessResponse> deleteSupermarket(@RequestHeader(value = "Authorization") String id,
+                                                         @PathVariable("id") Long supermarketId) throws IllegalAccessException {
+        String token = id.replace("Bearer ", "");
+        if (!jwtService.extractRole(token).equalsIgnoreCase("admin")) {
+            throw new IllegalAccessException("You have no access.");
+        }
+
+        return ResponseEntity.ok(SuccessResponse.builder().success(true).build());
+    }
+
+    @GetMapping("/supermarket")
+    public ResponseEntity<List<Supermarket>> getAllSupermarkets() {
+        return ResponseEntity.ok(supermarketService.getAllSupermarkets());
     }
 }
