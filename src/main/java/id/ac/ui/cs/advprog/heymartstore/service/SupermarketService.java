@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.heymartstore.service;
 
+import id.ac.ui.cs.advprog.heymartstore.dto.EditSupermarketRequest;
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.repository.ProductRepository;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -76,5 +78,17 @@ public class SupermarketService {
         supermarketRepository.delete(supermarket);
 
         return supermarket;
+    }
+
+    public Supermarket editSupermarket(Long id, EditSupermarketRequest newSupermarket) {
+        if (newSupermarket == null) {
+            throw new IllegalArgumentException();
+        }
+
+        Supermarket supermarket = getSupermarket(id);
+
+        supermarket.setName(newSupermarket.getName());
+
+        return supermarketRepository.save(supermarket);
     }
 }

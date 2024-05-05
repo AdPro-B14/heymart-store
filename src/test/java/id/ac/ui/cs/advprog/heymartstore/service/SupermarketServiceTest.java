@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.heymartstore.service;
 
+import id.ac.ui.cs.advprog.heymartstore.dto.EditSupermarketRequest;
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.repository.ProductRepository;
@@ -82,10 +83,16 @@ public class SupermarketServiceTest {
         when(supermarketRepository.findById(supermarketList.getFirst().getId()))
                 .thenReturn(Optional.of(supermarketList.getFirst()));
 
+        EditSupermarketRequest request = new EditSupermarketRequest();
+        request.name = "Alfamart Kukel";
+
         supermarketList.getFirst().setName("Alfamart Kukel");
 
+        when(supermarketRepository.save(supermarketList.getFirst()))
+                .thenReturn(supermarketList.getFirst());
+
         Supermarket supermarket = supermarketService.editSupermarket(supermarketList.getFirst().getId(),
-                supermarketList.getFirst());
+                request);
 
         assertEquals(supermarket.getId(), supermarketList.getFirst().getId());
         assertEquals(supermarket.getName(), supermarketList.getFirst().getName());
@@ -93,13 +100,13 @@ public class SupermarketServiceTest {
 
     @Test
     void testEditSupermarketNotValid() {
-        when(supermarketRepository.findById(supermarketList.getFirst().getId()))
-                .thenReturn(Optional.of(supermarketList.getFirst()));
+        EditSupermarketRequest request = new EditSupermarketRequest();
+        request.name = "Alfamart Kukel";
 
         assertThrows(NoSuchElementException.class, () -> supermarketService.editSupermarket(-1L,
-                supermarketList.getFirst()));
+                request));
         assertThrows(IllegalArgumentException.class, () -> supermarketService.editSupermarket(null,
-                supermarketList.getFirst()));
+                request));
         assertThrows(IllegalArgumentException.class, () -> supermarketService.editSupermarket(1L,
                 null));
     }
