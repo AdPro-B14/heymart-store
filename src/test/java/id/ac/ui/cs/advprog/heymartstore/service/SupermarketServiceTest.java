@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,6 +59,22 @@ public class SupermarketServiceTest {
     @Test
     void testCreateSupermarketNotValid() {
         assertThrows(IllegalArgumentException.class, () -> supermarketService.createSupermarket(null));
+    }
+
+    @Test
+    void testDeleteSupermarketValid() {
+        when(supermarketRepository.findById(supermarketList.getFirst().getId()))
+                .thenReturn(Optional.of(supermarketList.getFirst()));
+
+        Supermarket supermarket = supermarketService.deleteSupermarket(supermarketList.getFirst().getId());
+
+        assertEquals(supermarket.getId(), supermarketList.getFirst().getId());
+    }
+
+    @Test
+    void testDeleteSupermarketNotValid() {
+        assertThrows(NoSuchElementException.class, () -> supermarketService.deleteSupermarket(-1L));
+        assertThrows(IllegalArgumentException.class, () -> supermarketService.deleteSupermarket(null));
     }
 
     @Test

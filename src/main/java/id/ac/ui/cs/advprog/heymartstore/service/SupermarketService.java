@@ -65,4 +65,8 @@ public class SupermarketService {
 
         return supermarketRepository.save(supermarket);
     }
+
+    public Supermarket deleteSupermarket(Long id) {
+        return null;
+    }
 }
