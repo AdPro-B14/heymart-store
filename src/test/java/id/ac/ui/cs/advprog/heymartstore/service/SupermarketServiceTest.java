@@ -78,6 +78,33 @@ public class SupermarketServiceTest {
     }
 
     @Test
+    void testEditSupermarketValid() {
+        when(supermarketRepository.findById(supermarketList.getFirst().getId()))
+                .thenReturn(Optional.of(supermarketList.getFirst()));
+
+        supermarketList.getFirst().setName("Alfamart Kukel");
+
+        Supermarket supermarket = supermarketService.editSupermarket(supermarketList.getFirst().getId(),
+                supermarketList.getFirst());
+
+        assertEquals(supermarket.getId(), supermarketList.getFirst().getId());
+        assertEquals(supermarket.getName(), supermarketList.getFirst().getName());
+    }
+
+    @Test
+    void testEditSupermarketNotValid() {
+        when(supermarketRepository.findById(supermarketList.getFirst().getId()))
+                .thenReturn(Optional.of(supermarketList.getFirst()));
+
+        assertThrows(NoSuchElementException.class, () -> supermarketService.editSupermarket(-1L,
+                supermarketList.getFirst()));
+        assertThrows(IllegalArgumentException.class, () -> supermarketService.editSupermarket(null,
+                supermarketList.getFirst()));
+        assertThrows(IllegalArgumentException.class, () -> supermarketService.editSupermarket(1L,
+                null));
+    }
+
+    @Test
     void testAddManagerValid() {
         for (Supermarket supermarket : supermarketList) {
             when(supermarketRepository.findById(supermarket.getId())).thenReturn(Optional.of(supermarket));
