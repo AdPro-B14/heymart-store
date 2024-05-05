@@ -133,9 +133,8 @@ public class SupermarketServiceTest {
 
     @Test
     void testAddManagerValid() {
-        for (Supermarket supermarket : supermarketList) {
-            when(supermarketRepository.findById(supermarket.getId())).thenReturn(Optional.of(supermarket));
-        }
+        when(supermarketRepository.findById(supermarketList.getFirst().getId()))
+                .thenReturn(Optional.of(supermarketList.getFirst()));
 
         supermarketService.addManager(1L, "arvin@gmail.com");
 
@@ -145,9 +144,8 @@ public class SupermarketServiceTest {
 
     @Test
     void testRemoveManagerValid() {
-        for (Supermarket supermarket : supermarketList) {
-            when(supermarketRepository.findById(supermarket.getId())).thenReturn(Optional.of(supermarket));
-        }
+        when(supermarketRepository.findById(supermarketList.getFirst().getId()))
+                .thenReturn(Optional.of(supermarketList.getFirst()));
 
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
 
@@ -158,9 +156,8 @@ public class SupermarketServiceTest {
 
     @Test
     void testRemoveManagerNotValid() {
-        for (Supermarket supermarket : supermarketList) {
-            when(supermarketRepository.findById(supermarket.getId())).thenReturn(Optional.of(supermarket));
-        }
+        when(supermarketRepository.findById(supermarketList.getFirst().getId()))
+                .thenReturn(Optional.of(supermarketList.getFirst()));
 
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
 
@@ -172,9 +169,8 @@ public class SupermarketServiceTest {
 
     @Test
     void testAddProductValid() {
-        for (Supermarket supermarket : supermarketList) {
-            when(supermarketRepository.findById(supermarket.getId())).thenReturn(Optional.of(supermarket));
-        }
+        when(supermarketRepository.findById(supermarketList.getFirst().getId()))
+                .thenReturn(Optional.of(supermarketList.getFirst()));
 
         Product product1 = Product.getBuilder().setName("Indomie Kuah Soto").setPrice(3500L).setStock(3).build();
         Product product2 = Product.getBuilder().setName("Indomie Kuah Goreng").setPrice(3000L).setStock(2).build();
