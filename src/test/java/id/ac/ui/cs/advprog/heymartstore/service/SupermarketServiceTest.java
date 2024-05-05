@@ -138,6 +138,10 @@ public class SupermarketServiceTest {
 
         assertEquals(2, supermarketService.getSupermarket(1L).getManagers().size());
         assertEquals("arvin@gmail.com", supermarketService.getSupermarket(1L).getManagers().getLast());
+
+        supermarketService.addManager(1L, "arvin@gmail.com");
+
+        assertEquals(2, supermarketService.getSupermarket(1L).getManagers().size());
     }
 
     @Test

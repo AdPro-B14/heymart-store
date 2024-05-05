@@ -19,8 +19,12 @@ public class SupermarketService {
 
     public Supermarket addManager(Long supermarketId, String managerEmail) {
         Supermarket supermarket = supermarketRepository.findById(supermarketId).orElseThrow();
-        supermarket.getManagers().add(managerEmail);
-        supermarketRepository.save(supermarket);
+
+        if (!supermarket.getManagers().contains(managerEmail)) {
+            supermarket.getManagers().add(managerEmail);
+            supermarketRepository.save(supermarket);
+        }
+
         return supermarket;
     }
 
