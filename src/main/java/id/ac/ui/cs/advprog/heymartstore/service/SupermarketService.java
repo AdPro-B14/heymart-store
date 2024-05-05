@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +59,7 @@ public class SupermarketService {
     }
 
     public List<Supermarket> getAllSupermarkets() {
-        return null;
+        return supermarketRepository.findAll();
     }
 
     public Supermarket createSupermarket(String name) {
