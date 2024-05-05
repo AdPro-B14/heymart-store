@@ -2,7 +2,6 @@ package id.ac.ui.cs.advprog.heymartstore.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,8 +33,8 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final Long userId = extractUserId(token);
-        return userId == Long.parseLong(userDetails.getUsername()) && !isTokenExpired(token);
+        final String username = extractEmail(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
     public boolean isTokenExpired(String token) {
