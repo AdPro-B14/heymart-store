@@ -75,12 +75,10 @@ public class SupermarketService {
         return supermarketRepository.save(supermarket);
     }
 
-    public Supermarket deleteSupermarket(Long id) {
+    public void deleteSupermarket(Long id) {
         Supermarket supermarket = getSupermarket(id);
 
         supermarketRepository.delete(supermarket);
-
-        return supermarket;
     }
 
     public Supermarket editSupermarket(Long id, EditSupermarketRequest newSupermarket) {

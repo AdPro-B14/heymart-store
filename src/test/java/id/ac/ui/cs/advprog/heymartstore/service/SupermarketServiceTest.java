@@ -76,9 +76,7 @@ public class SupermarketServiceTest {
         when(supermarketRepository.findById(supermarketList.getFirst().getId()))
                 .thenReturn(Optional.of(supermarketList.getFirst()));
 
-        Supermarket supermarket = supermarketService.deleteSupermarket(supermarketList.getFirst().getId());
-
-        assertEquals(supermarket.getId(), supermarketList.getFirst().getId());
+        supermarketService.deleteSupermarket(supermarketList.getFirst().getId());
     }
 
     @Test
