@@ -1,5 +1,7 @@
 package id.ac.ui.cs.advprog.heymartstore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,5 +26,7 @@ public class Supermarket {
     private List<String> managers = new ArrayList<>();
 
     @OneToMany(mappedBy = "supermarket", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties(value = {"supermarket", "hibernateLazyInitializer", "handler"}, allowSetters = true)
+    @JsonManagedReference
     private List<Product> products = new ArrayList<>();
 }
