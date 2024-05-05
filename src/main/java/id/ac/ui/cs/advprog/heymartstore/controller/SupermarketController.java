@@ -48,8 +48,8 @@ public class SupermarketController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/add-manager")
-    public ResponseEntity<SuccessResponse> addManager(@RequestHeader(value = "Authorization") String id,
+    @PutMapping("/add-manager/{id}")
+    public ResponseEntity<SuccessResponse> addManager(@RequestHeader(value = "Authorization") String id, @PathVariable("id") Long supermarketId,
                                                       @RequestBody AddManagerRequest request) throws IllegalAccessException {
         String token = id.replace("Bearer ", "");
         if (!jwtService.extractRole(token).equalsIgnoreCase("admin")) {
@@ -58,7 +58,7 @@ public class SupermarketController {
 
         SuccessResponse response = new SuccessResponse();
         try {
-            supermarketService.addManager(request.supermarketId, request.managerEmail);
+            supermarketService.addManager(supermarketId, request.managerEmail);
             response.success = true;
         } catch (Exception e) {
             System.out.println(e);
@@ -68,8 +68,9 @@ public class SupermarketController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/remove-manager")
+    @PutMapping("/remove-manager/{id}")
     public ResponseEntity<SuccessResponse> removeManager(@RequestHeader(value = "Authorization") String id,
+                                                         @PathVariable("id") Long supermarketId,
                                                          @RequestBody AddManagerRequest request) throws IllegalAccessException {
         String token = id.replace("Bearer ", "");
         if (!jwtService.extractRole(token).equalsIgnoreCase("admin")) {
@@ -79,7 +80,7 @@ public class SupermarketController {
         SuccessResponse response = new SuccessResponse();
 
         try {
-            supermarketService.removeManager(request.supermarketId, request.managerEmail);
+            supermarketService.removeManager(supermarketId, request.managerEmail);
             response.success = true;
         } catch (Exception e) {
             response.success = false;
