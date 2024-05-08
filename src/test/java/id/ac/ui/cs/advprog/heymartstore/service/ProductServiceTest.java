@@ -53,6 +53,18 @@ public class ProductServiceTest {
         assertEquals(productList.getFirst().getName(),"Indomie");
         assertEquals(productList.getFirst().getPrice(), 10000L);
         assertEquals(productList.getFirst().getStock(), 10);
+    }
 
+    @Test
+    public void testFindProductById() {
+        Product product = new ProductBuilder()
+                .setName("Indomie")
+                .setPrice(10000L)
+                .setStock(10)
+                .build();
+        product.setId("123");
+        productList.add(product);
+
+        assertEquals("123", productList.getFirst().getId());
     }
 }

@@ -7,7 +7,7 @@ public class ProductBuilder {
     private Supermarket supermarket;
 
     public ProductBuilder setName(String name) {
-        if ((name == null) || name.isEmpty()) {
+        if ((name == null) || name.equals("")) {
             throw new IllegalArgumentException();
         }
 

@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.heymartstore.service;
 
+import id.ac.ui.cs.advprog.heymartstore.dto.ModifyProductResponse;
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 
@@ -10,5 +11,6 @@ public interface ProductService {
     public Product editProduct(String UUID, Product changeAttribute);
     public Product deleteProduct(String UUID);
     public List<Product> getAllProduct();
-    public List<Product> searchProduct(String name);
+    public List<Product> searchProductByName(String name);
+    public Product searchProductById(String id);
 }
