@@ -54,35 +54,35 @@ dependencies {
 }
 
 tasks.register<Test>("unitTest") {
-    description = "Runs unit tests."
-    group = "verification"
+	description = "Runs unit tests."
+	group = "verification"
 
-    filter {
-        excludeTestsMatching("*FunctionalTest")
-    }
+	filter {
+		excludeTestsMatching("*FunctionalTest")
+	}
 }
 
 tasks.register<Test>("functionalTest") {
-    description = "Runs functional tests."
-    group = "verification"
+	description = "Runs functional tests."
+	group = "verification"
 
-    filter {
-        includeTestsMatching("*FunctionalTest")
-    }
+	filter {
+		includeTestsMatching("*FunctionalTest")
+	}
 }
 
 tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
+	useJUnitPlatform()
 }
 
 tasks.test {
-    filter {
-        excludeTestsMatching("*FunctionalTest")
-    }
+	filter {
+		excludeTestsMatching("*FunctionalTest")
+	}
 
-    finalizedBy(tasks.jacocoTestReport)
+	finalizedBy(tasks.jacocoTestReport)
 }
 
 tasks.jacocoTestReport {
-    dependsOn(tasks.test)
+	dependsOn(tasks.test)
 }

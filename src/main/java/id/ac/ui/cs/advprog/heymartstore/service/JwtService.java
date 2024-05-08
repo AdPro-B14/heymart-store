@@ -22,11 +22,11 @@ public class JwtService {
     private Long EXPIRE_DURATION;
 
     public Long extractUserId(String token) {
-        return Long.parseLong(extractClaim(token, Claims::getSubject));
+        return Long.parseLong(String.valueOf(extractAllClaims(token).get("userId")));
     }
 
     public String extractEmail(String token) {
-        return String.valueOf(extractAllClaims(token).get("email"));
+        return extractClaim(token, Claims::getSubject);
     }
 
     public String extractRole(String token) {
@@ -34,8 +34,8 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final Long userId = extractUserId(token);
-        return userId == Long.parseLong(userDetails.getUsername()) && !isTokenExpired(token);
+        final String username = extractEmail(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
     public boolean isTokenExpired(String token) {

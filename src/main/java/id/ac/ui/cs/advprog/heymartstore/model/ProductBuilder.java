@@ -58,17 +58,10 @@ public class ProductBuilder {
     private boolean stringValidation(String string) {
         for (int i = 0; i < string.length(); i++) {
             char c = string.charAt(i);
-            System.out.println(c);
             if (!Character.isLetterOrDigit(c) && c != ' ') {
                 return false;
             }
         }
         return true;
-    }
-
-    private void resetBuilder() {
-        this.name = "";
-        this.price = 0L;
-        this.stock = 0;
     }
 }
