@@ -1,38 +1,33 @@
 package id.ac.ui.cs.advprog.heymartstore.service;
 
-import id.ac.ui.cs.advprog.heymartstore.dto.DeleteProductRequest;
-import id.ac.ui.cs.advprog.heymartstore.dto.GetProfileResponse;
-import id.ac.ui.cs.advprog.heymartstore.dto.ModifyProductResponse;
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
-import id.ac.ui.cs.advprog.heymartstore.model.ProductBuilder;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.repository.ProductRepository;
+import id.ac.ui.cs.advprog.heymartstore.repository.SupermarketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private SupermarketRepository supermarketRepository;
     private static String AUTH_BASE_URL = "";
     private WebClient webClient;
 
-    public Product createProduct(Supermarket supermarket, String name, Long price, Integer stock)  {
-        Product product = new ProductBuilder()
-                .setName(name)
-                .setStock(stock)
-                .setPrice(price)
-                .setSupermarket(supermarket)
-                .build();
-
-        return productRepository.save(product);
+    public Supermarket createProduct(Product product) {
+        if (product == null) {
+            throw new IllegalArgumentException();
+        }
+        productRepository.save(product);
+        return supermarketRepository.save(product.getSupermarket());
     }
 
     public Product editProduct(String UUID, Product changeAttribute) {
@@ -49,8 +44,8 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    public List<Product> getAllProduct() {
-        List<Product> allProduct = productRepository.findAll();
+    public List<Product> getAllProduct(Long supermarket) {
+        List<Product> allProduct = supermarketRepository.getReferenceById(supermarket).getProducts();
         return allProduct;
     }
 

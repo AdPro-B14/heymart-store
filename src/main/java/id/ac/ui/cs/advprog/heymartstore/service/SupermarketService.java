@@ -40,20 +40,6 @@ public class SupermarketService {
         return supermarket;
     }
 
-    public Supermarket addProduct(Long supermarketId, Product product) {
-        if (product == null) {
-            throw new IllegalArgumentException();
-        }
-
-        Supermarket supermarket = getSupermarket(supermarketId);
-
-        product.setSupermarket(supermarket);
-        supermarket.getProducts().add(product);
-
-        productRepository.save(product);
-        return supermarketRepository.save(supermarket);
-    }
-
     public Supermarket getSupermarket(Long id) {
         if (id == null) {
             throw new IllegalArgumentException();

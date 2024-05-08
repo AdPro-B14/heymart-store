@@ -5,8 +5,10 @@ import id.ac.ui.cs.advprog.heymartstore.dto.DeleteProductRequest;
 import id.ac.ui.cs.advprog.heymartstore.dto.ModifyProductResponse;
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.ProductBuilder;
+import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.service.JwtService;
 import id.ac.ui.cs.advprog.heymartstore.service.ProductService;
+import id.ac.ui.cs.advprog.heymartstore.service.SupermarketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,11 +33,14 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private SupermarketService supermarketService;
+
     private final JwtService jwtService;
 
     @GetMapping("/all-product")
-    public ResponseEntity<List<Product>> allProduct() {
-        List<Product> allProduct = productService.getAllProduct();
+    public ResponseEntity<List<Product>> allProduct(@PathVariable("query") Long supermarketId) {
+        List<Product> allProduct = productService.getAllProduct(supermarketId);
         return ResponseEntity.ok(allProduct);
     }
 
@@ -54,13 +59,15 @@ public class ProductController {
                 && !jwtService.extractRole(token).equalsIgnoreCase("admin")) {
             throw new IllegalAccessException("You have no access.");
         }
-
-        Product savedProduct = productService.createProduct(new ProductBuilder()
+        Supermarket target = supermarketService.getSupermarket(product.supermarketId);
+        Product productnya = new ProductBuilder()
                 .setName(product.name)
                 .setStock(product.stock)
                 .setPrice(product.price)
-                .build());
-        return new ResponseEntity<>(savedProduct, HttpStatus.OK);
+                .setSupermarket(target)
+                .build();
+        Supermarket savedProduct = productService.createProduct(productnya);
+        return new ResponseEntity<>(productnya, HttpStatus.OK);
     }
 
     @PostMapping("/edit")
