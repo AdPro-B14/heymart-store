@@ -38,7 +38,7 @@ public class ProductController {
 
     private final JwtService jwtService;
 
-    @GetMapping("/all-product")
+    @GetMapping("/all-product/{query}")
     public ResponseEntity<List<Product>> allProduct(@PathVariable("query") Long supermarketId) {
         List<Product> allProduct = productService.getAllProduct(supermarketId);
         return ResponseEntity.ok(allProduct);
