@@ -4,6 +4,5 @@ public class CreateProductRequest {
     public String name;
     public Integer stock;
     public Long price;
-
     public Long supermarketId;
 }

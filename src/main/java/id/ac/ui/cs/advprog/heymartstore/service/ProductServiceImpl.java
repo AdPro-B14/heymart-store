@@ -50,7 +50,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public List<Product> searchProductByName(String name) {
-        System.out.println(name);
         List<Product> searchProductByName = productRepository.findAllByNameIsContainingIgnoreCase(name);
         return searchProductByName;
     }
