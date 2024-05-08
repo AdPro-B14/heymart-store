@@ -47,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(UUID).orElseThrow();
         productRepository.delete(product);
         return product;
-
+    }
 
     public List<Product> getAllProduct() {
         List<Product> allProduct = productRepository.findAll();
