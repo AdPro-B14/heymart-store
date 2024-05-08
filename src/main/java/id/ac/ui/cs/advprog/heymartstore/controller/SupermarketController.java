@@ -143,8 +143,13 @@ public class SupermarketController {
         return ResponseEntity.ok(SuccessResponse.builder().success(true).build());
     }
 
-    @GetMapping("/supermarket")
+    @GetMapping("/all-supermarket")
     public ResponseEntity<List<Supermarket>> getAllSupermarkets() {
         return ResponseEntity.ok(supermarketService.getAllSupermarkets());
+    }
+
+    @GetMapping("/supermarket")
+    public ResponseEntity<Supermarket> getSupermarket(@RequestParam("id") Long supermarketId) {
+        return ResponseEntity.ok(supermarketService.getSupermarket(supermarketId));
     }
 }
