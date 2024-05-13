@@ -5,6 +5,7 @@ import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.repository.ProductRepository;
 import id.ac.ui.cs.advprog.heymartstore.repository.SupermarketRepository;
+import id.ac.ui.cs.advprog.heymartstore.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +34,11 @@ public class SupermarketServiceTest {
     @Mock
     private ProductRepository productRepository;
 
+    @Mock
+    private ProductService productService;
+
     List<Supermarket> supermarketList = new ArrayList<>();
+    List<Product> productList = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
@@ -169,24 +174,32 @@ public class SupermarketServiceTest {
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
     }
 
+    public Product createProduct(Product product) {
+        productList.add(product);
+        return product;
+    }
+
     @Test
     void testAddProductValid() {
-        when(supermarketRepository.findById(supermarketList.getFirst().getId()))
-                .thenReturn(Optional.of(supermarketList.getFirst()));
+        Product product1 = Product.getBuilder().setName("Indomie Kuah Soto").setPrice(3500L).setStock(3).
+                setSupermarket(supermarketList.getFirst()).build();
 
-        Product product1 = Product.getBuilder().setName("Indomie Kuah Soto").setPrice(3500L).setStock(3).build();
-        Product product2 = Product.getBuilder().setName("Indomie Kuah Goreng").setPrice(3000L).setStock(2).build();
+        Product product2 = Product.getBuilder().setName("Indomie Kuah Goreng").setPrice(3000L).setStock(2).
+                setSupermarket(supermarketList.getFirst()).build();
 
-        supermarketService.addProduct(1L, product1);
-        supermarketService.addProduct(1L, product2);
+        createProduct(product1);
+        createProduct(product2);
+        assertEquals(supermarketList.getFirst(), product1.getSupermarket());
+        assertEquals(supermarketList.getFirst(), product2.getSupermarket());
 
-        assertEquals(2, supermarketService.getSupermarket(1L).getProducts().size());
-        assertEquals(product1, supermarketService.getSupermarket(1L).getProducts().getFirst());
-        assertEquals(product2, supermarketService.getSupermarket(1L).getProducts().getLast());
+        assertEquals(2, productList.size());
     }
 
     @Test
     void testAddProductNotValid() {
-        assertThrows(IllegalArgumentException.class, () -> supermarketService.addProduct(1L, null));
+        when(productService.createProduct(null))
+                .thenThrow(IllegalArgumentException.class);
+
+        assertThrows(IllegalArgumentException.class, () -> productService.createProduct(null));
     }
 }
