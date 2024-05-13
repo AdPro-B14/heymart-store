@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,5 +106,23 @@ public class ProductController {
     public ResponseEntity<Product> searchProductById(@PathVariable("id") String id) {
         Product queryProduct = productService.searchProductById(id);
         return ResponseEntity.ok(queryProduct);
+    }
+
+    @GetMapping("/findByMultipleId/{id}")
+    public ResponseEntity<List<Product>> searchProductByMultipleId(@PathVariable("id") String id) throws IllegalAccessException {
+        String[] ids = id.split(",");
+        List<Product> products = new ArrayList<>();
+
+        for (String productId : ids) {
+            Product queryProduct = productService.searchProductById(productId.trim()); // Trim to remove any leading/trailing spaces
+            if (queryProduct != null) {
+                products.add(queryProduct);
+            }
+
+            else {
+                throw new IllegalAccessException("Terdapat item yang tidak valid!");
+            }
+        }
+        return ResponseEntity.ok(products);
     }
 }
