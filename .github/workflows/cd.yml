@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Set environment
         id: set-env
-        uses: AdPro-B14/heymart-store/.github/actions/set-environment@staging
+        uses: AdPro-B14/heymart-store/.github/actions/set-environment@dev
   build:
     name: Cloud Run Deployment
     runs-on: ubuntu-latest
