@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -49,9 +50,15 @@ public class ProductServiceImpl implements ProductService {
         return allProduct;
     }
 
-    public List<Product> searchProductByName(String name) {
-        List<Product> searchProductByName = productRepository.findAllByNameIsContainingIgnoreCase(name);
-        return searchProductByName;
+    public List<Product> searchProductByName(Supermarket supermarket, String name) {
+        List<Product> searchProductByName = supermarket.getProducts();
+        List<Product> productList = new ArrayList<>();
+        for (Product product : searchProductByName) {
+            if (product.getName().toLowerCase().contains(name.toLowerCase())) {
+                productList.add(product);
+            }
+        }
+        return productList;
     }
 
     public Product searchProductById(String id) {
