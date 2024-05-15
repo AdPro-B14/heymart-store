@@ -1,4 +1,4 @@
-name: Continuous Integration (CI)
+name: Continous Integration (CI)
 
 on:
   push:
@@ -6,8 +6,16 @@ on:
 
 env:
   PG_HOST: ${{ secrets.PG_HOST }}
+  PG_HOST_DEV: ${{ secrets.PG_HOST_DEV }}
+  PG_HOST_STAGING: ${{ secrets.PG_HOST_STAGING }}
   PG_USERNAME: ${{ secrets.PG_USERNAME }}
   PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+  JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+  JWT_EXPIRE_DURATION: ${{ secrets.JWT_EXPIRE_DURATION }}
+  GATEWAY_TOKEN: ${{ secrets.GATEWAY_TOKEN }}
+  GATEWAY_URL: ${{ secrets.GATEWAY_URL }}
+  GATEWAY_URL_DEV: ${{ secrets.GATEWAY_URL_DEV }}
+  GATEWAY_URL_STAGING: ${{ secrets.GATEWAY_URL_STAGING }}
 
 jobs:
   test:
