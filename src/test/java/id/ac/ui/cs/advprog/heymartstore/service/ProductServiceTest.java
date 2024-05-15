@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.heymartstore.service;
 
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.ProductBuilder;
+import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.repository.ProductRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,10 +31,12 @@ public class ProductServiceTest {
     ProductServiceImpl service;
 
     private static ArrayList<Product> productList;
+    private static ArrayList<Supermarket> supermarketList;
 
     @BeforeEach
     void setUp(){
         productList = new ArrayList<>();
+        supermarketList = new ArrayList<>();
     }
 
     @AfterEach
@@ -66,5 +69,31 @@ public class ProductServiceTest {
         productList.add(product);
 
         assertEquals("123", productList.getFirst().getId());
+    }
+
+    @Test
+    public void testSearchProductByName() {
+        Supermarket supermarket1 = Supermarket.builder()
+                .id(1L)
+                .name("Alfamart Kutek")
+                .managers(new ArrayList<>())
+                .products(new ArrayList<>()).build();
+        supermarket1.getManagers().add("williams@gmail.com");
+
+        supermarketList.add(supermarket1);
+
+        Product product = new ProductBuilder()
+                .setName("Indomie")
+                .setPrice(10000L)
+                .setStock(10)
+                .setSupermarket(supermarket1)
+                .build();
+        productList.add(product);
+
+        assertEquals(productList.getFirst().getSupermarket(), product.getSupermarket());
+        assertTrue(productList.getFirst().getName().contains("Ind"));
+
+
+
     }
 }
