@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
 
-    @MockBean
+    @Mock
     ProductRepository productRepository;
     @InjectMocks
     ProductServiceImpl service;
@@ -80,20 +81,19 @@ public class ProductServiceTest {
                 .products(new ArrayList<>()).build();
         supermarket1.getManagers().add("williams@gmail.com");
 
-        supermarketList.add(supermarket1);
-
         Product product = new ProductBuilder()
                 .setName("Indomie")
                 .setPrice(10000L)
                 .setStock(10)
                 .setSupermarket(supermarket1)
                 .build();
+
+        supermarket1.getProducts().add(product);
         productList.add(product);
+        supermarketList.add(supermarket1);
 
-        assertEquals(productList.getFirst().getSupermarket(), product.getSupermarket());
-        assertTrue(productList.getFirst().getName().contains("Ind"));
-
-
-
+        assertEquals(supermarketList.getFirst(), product.getSupermarket());
+        List<Product> queryProduct = service.searchProductByName(supermarket1, product.getName());
+        assertTrue(queryProduct.getFirst().getName().contains(product.getName()));
     }
 }
