@@ -45,10 +45,11 @@ public class ProductController {
         return ResponseEntity.ok(allProduct);
     }
 
-    @GetMapping("/search/{query}")
-    public ResponseEntity<List<Product>> queryProduct(@PathVariable("query") String query) {
-        List<Product> queryProduct = productService.searchProductByName(query);
-        return ResponseEntity.ok(queryProduct);
+    @GetMapping("/search/{supermarket}/{query}")
+    public ResponseEntity<List<Product>> queryProduct(@PathVariable("supermarket") Long supermarket, @PathVariable("query") String query) {
+        Supermarket target = supermarketService.getSupermarket(supermarket);
+        List<Product> listProduct= productService.searchProductByName(target, query);
+        return ResponseEntity.ok(listProduct);
     }
 
     @PostMapping("/create")
