@@ -10,6 +10,6 @@ public interface ProductService {
     public Product editProduct(String UUID, Product changeAttribute);
     public Product deleteProduct(String UUID);
     public List<Product> getAllProduct(Long supermarket);
-    public List<Product> searchProductByName(String name);
+    public List<Product> searchProductByName(Supermarket supermarket, String name);
     public Product searchProductById(String id);
 }
