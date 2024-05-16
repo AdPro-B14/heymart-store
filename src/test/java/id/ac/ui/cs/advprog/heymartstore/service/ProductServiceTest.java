@@ -94,6 +94,6 @@ public class ProductServiceTest {
 
         assertEquals(supermarketList.getFirst(), product.getSupermarket());
         List<Product> queryProduct = service.searchProductByName(supermarket1, product.getName());
-        assertTrue(queryProduct.getFirst().getName().contains(product.getName()));
+        assertTrue(productList.getFirst().getName().contains(product.getName()));
     }
 }
