@@ -46,8 +46,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public List<Product> getAllProduct(Long supermarket) {
-        List<Product> allProduct = supermarketRepository.getReferenceById(supermarket).getProducts();
-        return allProduct;
+        return supermarketRepository.getReferenceById(supermarket).getProducts();
     }
 
     public List<Product> searchProductByName(Supermarket supermarket, String name) {
