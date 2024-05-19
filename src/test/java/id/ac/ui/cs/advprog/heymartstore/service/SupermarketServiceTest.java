@@ -37,6 +37,9 @@ public class SupermarketServiceTest {
     @Mock
     private SupermarketRepository supermarketRepository;
 
+    @Mock
+    private ProductRepository productRepository;
+
     List<Supermarket> supermarketList = new ArrayList<>();
 
     @BeforeEach
