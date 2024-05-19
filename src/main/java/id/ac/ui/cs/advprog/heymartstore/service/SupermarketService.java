@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.heymartstore.service;
 
+import id.ac.ui.cs.advprog.heymartstore.dto.AddManagerRequest;
 import id.ac.ui.cs.advprog.heymartstore.dto.EditSupermarketRequest;
 import id.ac.ui.cs.advprog.heymartstore.dto.RegisterManagerRequest;
 import id.ac.ui.cs.advprog.heymartstore.exception.ManagerAlreadyAddedException;
@@ -10,6 +11,7 @@ import id.ac.ui.cs.advprog.heymartstore.repository.ProductRepository;
 import id.ac.ui.cs.advprog.heymartstore.repository.SupermarketRepository;
 import id.ac.ui.cs.advprog.heymartstore.rest.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
