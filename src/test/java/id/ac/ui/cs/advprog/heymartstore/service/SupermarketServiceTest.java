@@ -37,9 +37,6 @@ public class SupermarketServiceTest {
     @Mock
     private SupermarketRepository supermarketRepository;
 
-    @Mock
-    private ProductRepository productRepository;
-
     List<Supermarket> supermarketList = new ArrayList<>();
 
     @BeforeEach
@@ -208,26 +205,5 @@ public class SupermarketServiceTest {
                 () -> supermarketService.removeManager(1L, "raissa@gmail.com"));
 
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
-    }
-
-    @Test
-    void testAddProductValid() {
-        when(supermarketRepository.findById(supermarketList.getFirst().getId()))
-                .thenReturn(Optional.of(supermarketList.getFirst()));
-
-        Product product1 = Product.getBuilder().setName("Indomie Kuah Soto").setPrice(3500L).setStock(3).build();
-        Product product2 = Product.getBuilder().setName("Indomie Kuah Goreng").setPrice(3000L).setStock(2).build();
-
-        supermarketService.addProduct(1L, product1);
-        supermarketService.addProduct(1L, product2);
-
-        assertEquals(2, supermarketService.getSupermarket(1L).getProducts().size());
-        assertEquals(product1, supermarketService.getSupermarket(1L).getProducts().getFirst());
-        assertEquals(product2, supermarketService.getSupermarket(1L).getProducts().getLast());
-    }
-
-    @Test
-    void testAddProductNotValid() {
-        assertThrows(IllegalArgumentException.class, () -> supermarketService.addProduct(1L, null));
     }
 }

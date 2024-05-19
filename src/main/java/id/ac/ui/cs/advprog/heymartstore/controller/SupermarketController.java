@@ -71,26 +71,6 @@ public class SupermarketController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/add-product")
-    public ResponseEntity<AddProductResponse> addProduct(@RequestHeader(value = "Authorization") String id,
-                                                         @RequestBody AddProductRequest request) throws IllegalAccessException {
-        String token = id.replace("Bearer ", "");
-        if (!jwtService.extractRole(token).equalsIgnoreCase("manager")
-                && !jwtService.extractRole(token).equalsIgnoreCase("admin")) {
-            throw new IllegalAccessException("You have no access.");
-        }
-
-        Product product = Product.getBuilder()
-                .setName(request.getName())
-                .setPrice(request.getPrice())
-                .setStock(request.getStock())
-                .build();
-
-        Supermarket supermarket = supermarketService.addProduct(request.supermarketId, product);
-
-        return ResponseEntity.ok(AddProductResponse.builder().supermarketId(supermarket.getId()).productId(product.getId()).build());
-    }
-
     @PostMapping("/create-supermarket")
     public ResponseEntity<Supermarket> createSupermarket(@RequestHeader(value = "Authorization") String id,
                                                          @RequestBody CreateSupermarketRequest request) throws IllegalAccessException {
