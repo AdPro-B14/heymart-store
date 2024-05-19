@@ -3,9 +3,11 @@ package id.ac.ui.cs.advprog.heymartstore.rest;
 import id.ac.ui.cs.advprog.heymartstore.dto.RegisterManagerRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Objects;
 
@@ -22,8 +24,11 @@ public class AuthService {
                         .uri("/register-manager")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + request.adminToken)
-                        .body(request, RegisterManagerRequest.class)
+                        .bodyValue(request)
                         .retrieve()
+                        .onStatus(HttpStatusCode::is5xxServerError,
+                                clientResponse -> clientResponse.bodyToMono(String.class)
+                                        .flatMap(body -> Mono.error(new RuntimeException(body))))
                         .toBodilessEntity()
                         .block())
                 .getStatusCode()

@@ -10,7 +10,7 @@ public class RegisterManagerRequest {
 
     public String password;
 
-    public Long managerSupermarketId;
+    public Long supermarketId;
 
     public String adminToken;
 }

@@ -143,7 +143,7 @@ public class SupermarketServiceTest {
                 .name("arvin")
                 .email("arvin@gmail.com")
                 .password("adpro123")
-                .managerSupermarketId(supermarketList.getFirst().getId())
+                .supermarketId(supermarketList.getFirst().getId())
                 .adminToken("12345")
                 .build();
 
@@ -159,7 +159,7 @@ public class SupermarketServiceTest {
                 .name("arvin123")
                 .email("arvin@gmail.com")
                 .password("adpro12553")
-                .managerSupermarketId(supermarketList.getFirst().getId())
+                .supermarketId(supermarketList.getFirst().getId())
                 .adminToken("12345")
                 .build();
 
@@ -171,7 +171,7 @@ public class SupermarketServiceTest {
                 .name("raissa")
                 .email("raissa@gmail.com")
                 .password("adpro")
-                .managerSupermarketId(supermarketList.getFirst().getId())
+                .supermarketId(supermarketList.getFirst().getId())
                 .adminToken("12345")
                 .build();
 
