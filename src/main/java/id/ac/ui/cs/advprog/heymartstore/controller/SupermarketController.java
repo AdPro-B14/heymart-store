@@ -18,35 +18,8 @@ import java.util.List;
 @RequestMapping("/supermarket")
 @RequiredArgsConstructor
 public class SupermarketController {
-    @Value("${spring.route.gateway_url}")
-    private String GATEWAY_URL;
-
     private final SupermarketService supermarketService;
     private final JwtService jwtService;
-
-    private final WebClient webClient;
-
-    @GetMapping("/profile")
-    public ResponseEntity<GetSupermarketProfileResponse> getProfile(@RequestParam Long id) {
-        Supermarket supermarket = supermarketService.getSupermarket(id);
-
-        GetSupermarketProfileResponse response = new GetSupermarketProfileResponse();
-        response.id = supermarket.getId();
-        response.name = supermarket.getName();
-        response.managers = new ArrayList<>();
-        for (String managerId : supermarket.getManagers()) {
-            GetProfileResponse profileResponse = webClient.get()
-                    .uri(GATEWAY_URL + "/api/user/profile",
-                            uriBuilder -> uriBuilder.queryParam("email", managerId).build())
-                    .retrieve()
-                    .bodyToMono(GetProfileResponse.class)
-                    .block();
-
-            response.managers.add(profileResponse.name);
-        }
-
-        return ResponseEntity.ok(response);
-    }
 
     @PutMapping("/add-manager/{id}")
     public ResponseEntity<SuccessResponse> addManager(@RequestHeader(value = "Authorization") String id, @PathVariable("id") Long supermarketId,
