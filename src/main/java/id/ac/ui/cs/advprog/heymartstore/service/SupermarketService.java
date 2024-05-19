@@ -1,10 +1,14 @@
 package id.ac.ui.cs.advprog.heymartstore.service;
 
 import id.ac.ui.cs.advprog.heymartstore.dto.EditSupermarketRequest;
+import id.ac.ui.cs.advprog.heymartstore.dto.RegisterManagerRequest;
+import id.ac.ui.cs.advprog.heymartstore.exception.ManagerAlreadyAddedException;
+import id.ac.ui.cs.advprog.heymartstore.exception.ManagerRegistrationFailedException;
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.repository.ProductRepository;
 import id.ac.ui.cs.advprog.heymartstore.repository.SupermarketRepository;
+import id.ac.ui.cs.advprog.heymartstore.rest.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +20,20 @@ import java.util.List;
 public class SupermarketService {
     private final SupermarketRepository supermarketRepository;
     private final ProductRepository productRepository;
+    private final AuthService authService;
 
-    public Supermarket addManager(Long supermarketId, String managerEmail) {
+    public Supermarket addManager(Long supermarketId, RegisterManagerRequest request) {
         Supermarket supermarket = supermarketRepository.findById(supermarketId).orElseThrow();
 
-        if (!supermarket.getManagers().contains(managerEmail)) {
-            supermarket.getManagers().add(managerEmail);
+        if (supermarket.getManagers().contains(request.email)) {
+            throw new ManagerAlreadyAddedException(request.email);
+        }
+
+        if (authService.registerManager(request)) {
+            supermarket.getManagers().add(request.email);
             supermarketRepository.save(supermarket);
+        } else {
+            throw new ManagerRegistrationFailedException(request.email);
         }
 
         return supermarket;

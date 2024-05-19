@@ -1,10 +1,14 @@
 package id.ac.ui.cs.advprog.heymartstore.service;
 
 import id.ac.ui.cs.advprog.heymartstore.dto.EditSupermarketRequest;
+import id.ac.ui.cs.advprog.heymartstore.dto.RegisterManagerRequest;
+import id.ac.ui.cs.advprog.heymartstore.exception.ManagerAlreadyAddedException;
+import id.ac.ui.cs.advprog.heymartstore.exception.ManagerRegistrationFailedException;
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.repository.ProductRepository;
 import id.ac.ui.cs.advprog.heymartstore.repository.SupermarketRepository;
+import id.ac.ui.cs.advprog.heymartstore.rest.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,10 +32,10 @@ public class SupermarketServiceTest {
     private SupermarketService supermarketService;
 
     @Mock
-    private SupermarketRepository supermarketRepository;
+    private AuthService authService;
 
     @Mock
-    private ProductRepository productRepository;
+    private SupermarketRepository supermarketRepository;
 
     List<Supermarket> supermarketList = new ArrayList<>();
 
@@ -134,14 +138,48 @@ public class SupermarketServiceTest {
         when(supermarketRepository.findById(supermarketList.getFirst().getId()))
                 .thenReturn(Optional.of(supermarketList.getFirst()));
 
-        supermarketService.addManager(1L, "arvin@gmail.com");
+        RegisterManagerRequest registerManagerRequest1 = RegisterManagerRequest
+                .builder()
+                .name("arvin")
+                .email("arvin@gmail.com")
+                .password("adpro123")
+                .role("MANAGER")
+                .managerSupermarketId(supermarketList.getFirst().getId())
+                .adminToken("12345")
+                .build();
+
+        when(authService.registerManager(registerManagerRequest1)).thenReturn(true);
+
+        supermarketService.addManager(1L, registerManagerRequest1);
 
         assertEquals(2, supermarketService.getSupermarket(1L).getManagers().size());
         assertEquals("arvin@gmail.com", supermarketService.getSupermarket(1L).getManagers().getLast());
 
-        supermarketService.addManager(1L, "arvin@gmail.com");
+        RegisterManagerRequest registerManagerRequest2 = RegisterManagerRequest
+                .builder()
+                .name("arvin123")
+                .email("arvin@gmail.com")
+                .password("adpro12553")
+                .role("MANAGER")
+                .managerSupermarketId(supermarketList.getFirst().getId())
+                .adminToken("12345")
+                .build();
 
+        assertThrows(ManagerAlreadyAddedException.class, () -> supermarketService.addManager(1L,  registerManagerRequest2));
         assertEquals(2, supermarketService.getSupermarket(1L).getManagers().size());
+
+        RegisterManagerRequest registerManagerRequest3 = RegisterManagerRequest
+                .builder()
+                .name("raissa")
+                .email("raissa@gmail.com")
+                .password("adpro")
+                .role("MANAGER")
+                .managerSupermarketId(supermarketList.getFirst().getId())
+                .adminToken("12345")
+                .build();
+
+        when(authService.registerManager(registerManagerRequest3)).thenReturn(false);
+        assertThrows(ManagerRegistrationFailedException.class, () -> supermarketService.addManager(1L,  registerManagerRequest3));
     }
 
     @Test

@@ -58,7 +58,16 @@ public class SupermarketController {
 
         SuccessResponse response = new SuccessResponse();
         try {
-            supermarketService.addManager(supermarketId, request.managerEmail);
+            RegisterManagerRequest registerManagerRequest = RegisterManagerRequest.builder()
+                    .name(request.name)
+                    .email(request.email)
+                    .password(request.password)
+                    .managerSupermarketId(supermarketId)
+                    .role("MANAGER")
+                    .adminToken(token)
+                    .build();
+
+            supermarketService.addManager(supermarketId, registerManagerRequest);
             response.success = true;
         } catch (Exception e) {
             System.out.println(e);
@@ -80,7 +89,7 @@ public class SupermarketController {
         SuccessResponse response = new SuccessResponse();
 
         try {
-            supermarketService.removeManager(supermarketId, request.managerEmail);
+            supermarketService.removeManager(supermarketId, request.email);
             response.success = true;
         } catch (Exception e) {
             response.success = false;
