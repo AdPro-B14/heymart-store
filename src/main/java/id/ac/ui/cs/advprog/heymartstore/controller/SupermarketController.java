@@ -36,7 +36,6 @@ public class SupermarketController {
                     .email(request.email)
                     .password(request.password)
                     .managerSupermarketId(supermarketId)
-                    .role("MANAGER")
                     .adminToken(token)
                     .build();
 

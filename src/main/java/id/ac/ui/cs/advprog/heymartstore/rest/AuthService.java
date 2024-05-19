@@ -19,7 +19,7 @@ public class AuthService {
 
     public boolean registerManager(RegisterManagerRequest request) {
         return Objects.requireNonNull(webClient.post()
-                        .uri("/signup/")
+                        .uri("/register-manager")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + request.adminToken)
                         .body(request, RegisterManagerRequest.class)

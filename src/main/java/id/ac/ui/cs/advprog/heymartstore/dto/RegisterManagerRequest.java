@@ -12,7 +12,5 @@ public class RegisterManagerRequest {
 
     public Long managerSupermarketId;
 
-    public String role;
-
     public String adminToken;
 }
