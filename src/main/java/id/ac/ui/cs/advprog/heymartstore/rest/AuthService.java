@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.heymartstore.rest;
 
 import id.ac.ui.cs.advprog.heymartstore.dto.RegisterManagerRequest;
+import id.ac.ui.cs.advprog.heymartstore.dto.RemoveManagerRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -22,6 +23,22 @@ public class AuthService {
     public boolean registerManager(RegisterManagerRequest request) {
         return Objects.requireNonNull(webClient.post()
                         .uri("/register-manager")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + request.adminToken)
+                        .bodyValue(request)
+                        .retrieve()
+                        .onStatus(HttpStatusCode::is5xxServerError,
+                                clientResponse -> clientResponse.bodyToMono(String.class)
+                                        .flatMap(body -> Mono.error(new RuntimeException(body))))
+                        .toBodilessEntity()
+                        .block())
+                .getStatusCode()
+                .is2xxSuccessful();
+    }
+
+    public boolean removeManager(RemoveManagerRequest request) {
+        return Objects.requireNonNull(webClient.post()
+                        .uri("/remove-manager")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + request.adminToken)
                         .bodyValue(request)

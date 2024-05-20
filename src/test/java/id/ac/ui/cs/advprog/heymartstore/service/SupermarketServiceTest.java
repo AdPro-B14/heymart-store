@@ -183,10 +183,12 @@ public class SupermarketServiceTest {
     void testRemoveManagerValid() {
         when(supermarketRepository.findById(supermarketList.getFirst().getId()))
                 .thenReturn(Optional.of(supermarketList.getFirst()));
+        when(authService.removeManager(any()))
+                .thenReturn(true);
 
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
 
-        supermarketService.removeManager(1L, "williams@gmail.com");
+        supermarketService.removeManager(1L, "121213", "williams@gmail.com");
 
         assertEquals(0, supermarketService.getSupermarket(1L).getManagers().size());
     }
@@ -199,7 +201,7 @@ public class SupermarketServiceTest {
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
 
         assertThrows(IllegalArgumentException.class,
-                () -> supermarketService.removeManager(1L, "raissa@gmail.com"));
+                () -> supermarketService.removeManager(1L, "213132", "raissa@gmail.com"));
 
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
     }
