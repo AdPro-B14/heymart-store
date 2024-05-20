@@ -53,7 +53,8 @@ public class SupermarketService {
                 .adminToken(token)
                 .build());
 
-        return supermarket;
+        supermarket.getManagers().remove(managerEmail);
+        return supermarketRepository.save(supermarket);
     }
 
     public Supermarket addProduct(Long supermarketId, Product product) {
@@ -111,12 +112,13 @@ public class SupermarketService {
         if (newSupermarket.getName() != null) {
             supermarket.setName(newSupermarket.getName());
         }
+
+        supermarketRepository.save(supermarket);
+
         if (newSupermarket.getManagers() != null) {
-            List<String> removedManagers = new ArrayList<>();
             for (String currentManager : supermarket.getManagers()) {
                 if (!newSupermarket.getManagers().contains(currentManager)) {
                     removeManager(supermarket.getId(), newSupermarket.getAdminToken(), currentManager);
-                    removedManagers.add(currentManager);
                 }
             }
 
@@ -125,12 +127,8 @@ public class SupermarketService {
                     throw new IllegalArgumentException("You can't add new manager through this endpoint.");
                 }
             }
-
-            for (String removedManager : removedManagers) {
-                supermarket.getManagers().remove(removedManager);
-            }
         }
 
-        return supermarketRepository.save(supermarket);
+        return supermarketRepository.findById(id).orElseThrow();
     }
 }
