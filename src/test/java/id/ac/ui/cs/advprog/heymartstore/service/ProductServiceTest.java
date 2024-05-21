@@ -72,6 +72,12 @@ public class ProductServiceTest {
         assertEquals(productList.getFirst().getStock(), 10);
     }
 
+    @Test
+    public void testErrorCreateProduct() {
+        assertThrows(IllegalArgumentException.class, ()->service.createProduct(null));
+    }
+
+
     private Product editProduct(Product product, String name) {
         product.setName(name);
         productList.add(product);
