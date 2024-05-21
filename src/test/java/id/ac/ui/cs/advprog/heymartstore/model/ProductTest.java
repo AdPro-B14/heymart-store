@@ -49,6 +49,40 @@ public class ProductTest {
     }
 
     @Test
+    void testNegativeStock() {
+        assertThrows(IllegalArgumentException.class, ()-> {
+            new ProductBuilder()
+                    .setName("Lala")
+                    .setPrice(10000L)
+                    .setStock(-1)
+                    .build();
+        });
+    }
+
+    @Test
+    void testNegativePrice() {
+        assertThrows(IllegalArgumentException.class, ()-> {
+            new ProductBuilder()
+                    .setName("Lala")
+                    .setPrice(-1L)
+                    .setStock(1)
+                    .build();
+        });
+    }
+
+    @Test
+    void testSupermarketNull() {
+        assertThrows(IllegalArgumentException.class, ()-> {
+            new ProductBuilder()
+                    .setName("Super")
+                    .setPrice(10000L)
+                    .setStock(10)
+                    .setSupermarket(null)
+                    .build();
+        });
+    }
+
+    @Test
     void testProductEmptyName() {
         assertThrows(IllegalArgumentException.class, ()-> {
             new ProductBuilder()
