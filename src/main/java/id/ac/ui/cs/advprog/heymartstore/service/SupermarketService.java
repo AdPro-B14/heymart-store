@@ -57,20 +57,6 @@ public class SupermarketService {
         return supermarketRepository.save(supermarket);
     }
 
-    public Supermarket addProduct(Long supermarketId, Product product) {
-        if (product == null) {
-            throw new IllegalArgumentException();
-        }
-
-        Supermarket supermarket = getSupermarket(supermarketId);
-
-        product.setSupermarket(supermarket);
-        supermarket.getProducts().add(product);
-
-        productRepository.save(product);
-        return supermarketRepository.save(supermarket);
-    }
-
     public Supermarket getSupermarket(Long id) {
         if (id == null) {
             throw new IllegalArgumentException();
@@ -116,9 +102,10 @@ public class SupermarketService {
         supermarketRepository.save(supermarket);
 
         if (newSupermarket.getManagers() != null) {
+            List<String> removedManagers = new ArrayList<>();
             for (String currentManager : supermarket.getManagers()) {
                 if (!newSupermarket.getManagers().contains(currentManager)) {
-                    removeManager(supermarket.getId(), newSupermarket.getAdminToken(), currentManager);
+                    removedManagers.add(currentManager);
                 }
             }
 
@@ -126,6 +113,9 @@ public class SupermarketService {
                 if (!supermarket.getManagers().contains(newManager)) {
                     throw new IllegalArgumentException("You can't add new manager through this endpoint.");
                 }
+            }
+            for (String removedManager : removedManagers) {
+                removeManager(supermarket.getId(), newSupermarket.getAdminToken(), removedManager);
             }
         }
 

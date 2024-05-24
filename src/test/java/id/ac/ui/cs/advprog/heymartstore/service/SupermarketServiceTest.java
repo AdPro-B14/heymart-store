@@ -188,7 +188,11 @@ public class SupermarketServiceTest {
 
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
 
-        supermarketService.removeManager(1L, "121213", "williams@gmail.com");
+        EditSupermarketRequest request = new EditSupermarketRequest();
+        request.setAdminToken("ABCDEF");
+        request.setManagers(new ArrayList<String>());
+
+        supermarketService.editSupermarket(1L, request);
 
         assertEquals(0, supermarketService.getSupermarket(1L).getManagers().size());
     }
@@ -204,5 +208,15 @@ public class SupermarketServiceTest {
                 () -> supermarketService.removeManager(1L, "213132", "raissa@gmail.com"));
 
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
+
+        List<String> modifiedManagers = new ArrayList<>(supermarketService.getSupermarket(1L).getManagers());
+        modifiedManagers.add("awoeaokewoak@gmail.com");
+        modifiedManagers.add("fowmafom@gmail.com");
+
+        EditSupermarketRequest request = new EditSupermarketRequest();
+        request.setAdminToken("ABCDEF");
+        request.setManagers(modifiedManagers);
+
+        assertThrows(IllegalArgumentException.class, () -> supermarketService.editSupermarket(1L, request));
     }
 }
