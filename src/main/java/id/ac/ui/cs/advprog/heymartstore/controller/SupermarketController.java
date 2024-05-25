@@ -3,7 +3,7 @@ package id.ac.ui.cs.advprog.heymartstore.controller;
 import id.ac.ui.cs.advprog.heymartstore.dto.*;
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
-import id.ac.ui.cs.advprog.heymartstore.service.JwtService;
+import id.ac.ui.cs.advprog.heymartstore.rest.UserService;
 import id.ac.ui.cs.advprog.heymartstore.service.SupermarketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,47 +18,29 @@ import java.util.List;
 @RequestMapping("/supermarket")
 @RequiredArgsConstructor
 public class SupermarketController {
-    @Value("${spring.route.gateway_url}")
-    private String GATEWAY_URL;
-
     private final SupermarketService supermarketService;
-    private final JwtService jwtService;
-
-    private final WebClient webClient;
-
-    @GetMapping("/profile")
-    public ResponseEntity<GetSupermarketProfileResponse> getProfile(@RequestParam Long id) {
-        Supermarket supermarket = supermarketService.getSupermarket(id);
-
-        GetSupermarketProfileResponse response = new GetSupermarketProfileResponse();
-        response.id = supermarket.getId();
-        response.name = supermarket.getName();
-        response.managers = new ArrayList<>();
-        for (String managerId : supermarket.getManagers()) {
-            GetProfileResponse profileResponse = webClient.get()
-                    .uri(GATEWAY_URL + "/api/user/profile",
-                            uriBuilder -> uriBuilder.queryParam("email", managerId).build())
-                    .retrieve()
-                    .bodyToMono(GetProfileResponse.class)
-                    .block();
-
-            response.managers.add(profileResponse.name);
-        }
-
-        return ResponseEntity.ok(response);
-    }
+    private final UserService userService;
 
     @PutMapping("/add-manager/{id}")
     public ResponseEntity<SuccessResponse> addManager(@RequestHeader(value = "Authorization") String id, @PathVariable("id") Long supermarketId,
-                                                      @RequestBody AddManagerRequest request) throws IllegalAccessException {
+                                                        @RequestBody AddManagerRequest request) throws IllegalAccessException {
         String token = id.replace("Bearer ", "");
-        if (!jwtService.extractRole(token).equalsIgnoreCase("admin")) {
+
+        if (!userService.getProfile(token).role.equalsIgnoreCase("admin")) {
             throw new IllegalAccessException("You have no access.");
         }
 
         SuccessResponse response = new SuccessResponse();
         try {
-            supermarketService.addManager(supermarketId, request.managerEmail);
+            RegisterManagerRequest registerManagerRequest = RegisterManagerRequest.builder()
+                    .name(request.name)
+                    .email(request.email)
+                    .password(request.password)
+                    .supermarketId(supermarketId)
+                    .adminToken(token)
+                    .build();
+
+            supermarketService.addManager(supermarketId, registerManagerRequest);
             response.success = true;
         } catch (Exception e) {
             System.out.println(e);
@@ -68,32 +50,11 @@ public class SupermarketController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/remove-manager/{id}")
-    public ResponseEntity<SuccessResponse> removeManager(@RequestHeader(value = "Authorization") String id,
-                                                         @PathVariable("id") Long supermarketId,
-                                                         @RequestBody AddManagerRequest request) throws IllegalAccessException {
-        String token = id.replace("Bearer ", "");
-        if (!jwtService.extractRole(token).equalsIgnoreCase("admin")) {
-            throw new IllegalAccessException("You have no access.");
-        }
-
-        SuccessResponse response = new SuccessResponse();
-
-        try {
-            supermarketService.removeManager(supermarketId, request.managerEmail);
-            response.success = true;
-        } catch (Exception e) {
-            response.success = false;
-        }
-
-        return ResponseEntity.ok(response);
-    }
-
     @PostMapping("/create-supermarket")
     public ResponseEntity<Supermarket> createSupermarket(@RequestHeader(value = "Authorization") String id,
-                                                         @RequestBody CreateSupermarketRequest request) throws IllegalAccessException {
+                                                            @RequestBody CreateSupermarketRequest request) throws IllegalAccessException {
         String token = id.replace("Bearer ", "");
-        if (!jwtService.extractRole(token).equalsIgnoreCase("admin")) {
+        if (!userService.getProfile(token).role.equalsIgnoreCase("admin")) {
             throw new IllegalAccessException("You have no access.");
         }
 
@@ -102,21 +63,22 @@ public class SupermarketController {
 
     @PutMapping("/edit-supermarket/{id}")
     public ResponseEntity<Supermarket> editSupermarket(@RequestHeader(value = "Authorization") String id,
-                                                         @PathVariable("id") Long supermarketId,
-                                                         @RequestBody EditSupermarketRequest request) throws IllegalAccessException {
+                                                            @PathVariable("id") Long supermarketId,
+                                                            @RequestBody EditSupermarketRequest request) throws IllegalAccessException {
         String token = id.replace("Bearer ", "");
-        if (!jwtService.extractRole(token).equalsIgnoreCase("admin")) {
+        if (!userService.getProfile(token).role.equalsIgnoreCase("admin")) {
             throw new IllegalAccessException("You have no access.");
         }
 
+        request.setAdminToken(token);
         return ResponseEntity.ok(supermarketService.editSupermarket(supermarketId, request));
     }
 
     @DeleteMapping("/delete-supermarket/{id}")
     public ResponseEntity<SuccessResponse> deleteSupermarket(@RequestHeader(value = "Authorization") String id,
-                                                         @PathVariable("id") Long supermarketId) throws IllegalAccessException {
+                                                            @PathVariable("id") Long supermarketId) throws IllegalAccessException {
         String token = id.replace("Bearer ", "");
-        if (!jwtService.extractRole(token).equalsIgnoreCase("admin")) {
+        if (!userService.getProfile(token).role.equalsIgnoreCase("admin")) {
             throw new IllegalAccessException("You have no access.");
         }
 

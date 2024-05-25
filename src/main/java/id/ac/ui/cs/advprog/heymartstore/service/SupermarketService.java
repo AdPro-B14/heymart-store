@@ -1,10 +1,15 @@
 package id.ac.ui.cs.advprog.heymartstore.service;
 
 import id.ac.ui.cs.advprog.heymartstore.dto.EditSupermarketRequest;
+import id.ac.ui.cs.advprog.heymartstore.dto.RegisterManagerRequest;
+import id.ac.ui.cs.advprog.heymartstore.dto.RemoveManagerRequest;
+import id.ac.ui.cs.advprog.heymartstore.exception.ManagerAlreadyAddedException;
+import id.ac.ui.cs.advprog.heymartstore.exception.ManagerRegistrationFailedException;
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.repository.ProductRepository;
 import id.ac.ui.cs.advprog.heymartstore.repository.SupermarketRepository;
+import id.ac.ui.cs.advprog.heymartstore.rest.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,28 +21,40 @@ import java.util.List;
 public class SupermarketService {
     private final SupermarketRepository supermarketRepository;
     private final ProductRepository productRepository;
+    private final AuthService authService;
 
-    public Supermarket addManager(Long supermarketId, String managerEmail) {
+    public Supermarket addManager(Long supermarketId, RegisterManagerRequest request) {
         Supermarket supermarket = supermarketRepository.findById(supermarketId).orElseThrow();
 
-        if (!supermarket.getManagers().contains(managerEmail)) {
-            supermarket.getManagers().add(managerEmail);
+        if (supermarket.getManagers().contains(request.email)) {
+            throw new ManagerAlreadyAddedException(request.email);
+        }
+
+        if (authService.registerManager(request)) {
+            supermarket.getManagers().add(request.email);
             supermarketRepository.save(supermarket);
+        } else {
+            throw new ManagerRegistrationFailedException(request.email);
         }
 
         return supermarket;
     }
 
-    public Supermarket removeManager(Long supermarketId, String managerEmail) {
+    public Supermarket removeManager(Long supermarketId, String token, String managerEmail) {
         Supermarket supermarket = supermarketRepository.findById(supermarketId).orElseThrow();
 
         if (!supermarket.getManagers().contains(managerEmail)) {
             throw new IllegalArgumentException();
         }
 
+        authService.removeManager(RemoveManagerRequest.builder()
+                .email(managerEmail)
+                .supermarketId(supermarketId)
+                .adminToken(token)
+                .build());
+
         supermarket.getManagers().remove(managerEmail);
-        supermarketRepository.save(supermarket);
-        return supermarket;
+        return supermarketRepository.save(supermarket);
     }
 
     public Supermarket getSupermarket(Long id) {
@@ -78,8 +95,30 @@ public class SupermarketService {
 
         Supermarket supermarket = getSupermarket(id);
 
-        supermarket.setName(newSupermarket.getName());
+        if (newSupermarket.getName() != null) {
+            supermarket.setName(newSupermarket.getName());
+        }
 
-        return supermarketRepository.save(supermarket);
+        supermarketRepository.save(supermarket);
+
+        if (newSupermarket.getManagers() != null) {
+            List<String> removedManagers = new ArrayList<>();
+            for (String currentManager : supermarket.getManagers()) {
+                if (!newSupermarket.getManagers().contains(currentManager)) {
+                    removedManagers.add(currentManager);
+                }
+            }
+
+            for (String newManager : newSupermarket.getManagers()) {
+                if (!supermarket.getManagers().contains(newManager)) {
+                    throw new IllegalArgumentException("You can't add new manager through this endpoint.");
+                }
+            }
+            for (String removedManager : removedManagers) {
+                removeManager(supermarket.getId(), newSupermarket.getAdminToken(), removedManager);
+            }
+        }
+
+        return supermarketRepository.findById(id).orElseThrow();
     }
 }

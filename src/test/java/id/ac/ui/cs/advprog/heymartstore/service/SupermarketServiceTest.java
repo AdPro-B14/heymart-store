@@ -1,11 +1,14 @@
 package id.ac.ui.cs.advprog.heymartstore.service;
 
 import id.ac.ui.cs.advprog.heymartstore.dto.EditSupermarketRequest;
+import id.ac.ui.cs.advprog.heymartstore.dto.RegisterManagerRequest;
+import id.ac.ui.cs.advprog.heymartstore.exception.ManagerAlreadyAddedException;
+import id.ac.ui.cs.advprog.heymartstore.exception.ManagerRegistrationFailedException;
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.repository.ProductRepository;
 import id.ac.ui.cs.advprog.heymartstore.repository.SupermarketRepository;
-import id.ac.ui.cs.advprog.heymartstore.service.*;
+import id.ac.ui.cs.advprog.heymartstore.rest.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,16 +32,12 @@ public class SupermarketServiceTest {
     private SupermarketService supermarketService;
 
     @Mock
+    private AuthService authService;
+
+    @Mock
     private SupermarketRepository supermarketRepository;
 
-    @Mock
-    private ProductRepository productRepository;
-
-    @Mock
-    private ProductService productService;
-
     List<Supermarket> supermarketList = new ArrayList<>();
-    List<Product> productList = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
@@ -139,24 +138,61 @@ public class SupermarketServiceTest {
         when(supermarketRepository.findById(supermarketList.getFirst().getId()))
                 .thenReturn(Optional.of(supermarketList.getFirst()));
 
-        supermarketService.addManager(1L, "arvin@gmail.com");
+        RegisterManagerRequest registerManagerRequest1 = RegisterManagerRequest
+                .builder()
+                .name("arvin")
+                .email("arvin@gmail.com")
+                .password("adpro123")
+                .supermarketId(supermarketList.getFirst().getId())
+                .adminToken("12345")
+                .build();
+
+        when(authService.registerManager(registerManagerRequest1)).thenReturn(true);
+
+        supermarketService.addManager(1L, registerManagerRequest1);
 
         assertEquals(2, supermarketService.getSupermarket(1L).getManagers().size());
         assertEquals("arvin@gmail.com", supermarketService.getSupermarket(1L).getManagers().getLast());
 
-        supermarketService.addManager(1L, "arvin@gmail.com");
+        RegisterManagerRequest registerManagerRequest2 = RegisterManagerRequest
+                .builder()
+                .name("arvin123")
+                .email("arvin@gmail.com")
+                .password("adpro12553")
+                .supermarketId(supermarketList.getFirst().getId())
+                .adminToken("12345")
+                .build();
 
+        assertThrows(ManagerAlreadyAddedException.class, () -> supermarketService.addManager(1L,  registerManagerRequest2));
         assertEquals(2, supermarketService.getSupermarket(1L).getManagers().size());
+
+        RegisterManagerRequest registerManagerRequest3 = RegisterManagerRequest
+                .builder()
+                .name("raissa")
+                .email("raissa@gmail.com")
+                .password("adpro")
+                .supermarketId(supermarketList.getFirst().getId())
+                .adminToken("12345")
+                .build();
+
+        when(authService.registerManager(registerManagerRequest3)).thenReturn(false);
+        assertThrows(ManagerRegistrationFailedException.class, () -> supermarketService.addManager(1L,  registerManagerRequest3));
     }
 
     @Test
     void testRemoveManagerValid() {
         when(supermarketRepository.findById(supermarketList.getFirst().getId()))
                 .thenReturn(Optional.of(supermarketList.getFirst()));
+        when(authService.removeManager(any()))
+                .thenReturn(true);
 
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
 
-        supermarketService.removeManager(1L, "williams@gmail.com");
+        EditSupermarketRequest request = new EditSupermarketRequest();
+        request.setAdminToken("ABCDEF");
+        request.setManagers(new ArrayList<String>());
+
+        supermarketService.editSupermarket(1L, request);
 
         assertEquals(0, supermarketService.getSupermarket(1L).getManagers().size());
     }
@@ -169,37 +205,18 @@ public class SupermarketServiceTest {
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
 
         assertThrows(IllegalArgumentException.class,
-                () -> supermarketService.removeManager(1L, "raissa@gmail.com"));
+                () -> supermarketService.removeManager(1L, "213132", "raissa@gmail.com"));
 
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
-    }
 
-    public Product createProduct(Product product) {
-        productList.add(product);
-        return product;
-    }
+        List<String> modifiedManagers = new ArrayList<>(supermarketService.getSupermarket(1L).getManagers());
+        modifiedManagers.add("awoeaokewoak@gmail.com");
+        modifiedManagers.add("fowmafom@gmail.com");
 
-    @Test
-    void testAddProductValid() {
-        Product product1 = Product.getBuilder().setName("Indomie Kuah Soto").setPrice(3500L).setStock(3).
-                setSupermarket(supermarketList.getFirst()).build();
+        EditSupermarketRequest request = new EditSupermarketRequest();
+        request.setAdminToken("ABCDEF");
+        request.setManagers(modifiedManagers);
 
-        Product product2 = Product.getBuilder().setName("Indomie Kuah Goreng").setPrice(3000L).setStock(2).
-                setSupermarket(supermarketList.getFirst()).build();
-
-        createProduct(product1);
-        createProduct(product2);
-        assertEquals(supermarketList.getFirst(), product1.getSupermarket());
-        assertEquals(supermarketList.getFirst(), product2.getSupermarket());
-
-        assertEquals(2, productList.size());
-    }
-
-    @Test
-    void testAddProductNotValid() {
-        when(productService.createProduct(null))
-                .thenThrow(IllegalArgumentException.class);
-
-        assertThrows(IllegalArgumentException.class, () -> productService.createProduct(null));
+        assertThrows(IllegalArgumentException.class, () -> supermarketService.editSupermarket(1L, request));
     }
 }
