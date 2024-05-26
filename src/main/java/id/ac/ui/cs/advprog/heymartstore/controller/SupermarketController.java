@@ -2,17 +2,13 @@ package id.ac.ui.cs.advprog.heymartstore.controller;
 
 import id.ac.ui.cs.advprog.heymartstore.dto.*;
 import id.ac.ui.cs.advprog.heymartstore.exception.RoleNotValidException;
-import id.ac.ui.cs.advprog.heymartstore.model.Product;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.rest.UserService;
 import id.ac.ui.cs.advprog.heymartstore.service.SupermarketService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -78,6 +74,8 @@ public class SupermarketController {
         if (!hasRole(token, roleAdmin)) {
             throw new RoleNotValidException();
         }
+
+        supermarketService.deleteSupermarket(supermarketId);
 
         return ResponseEntity.ok(SuccessResponse.builder().success(true).build());
     }

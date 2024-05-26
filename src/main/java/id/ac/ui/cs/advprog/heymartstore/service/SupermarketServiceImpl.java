@@ -6,7 +6,6 @@ import id.ac.ui.cs.advprog.heymartstore.dto.RemoveManagerRequest;
 import id.ac.ui.cs.advprog.heymartstore.exception.ManagerAlreadyAddedException;
 import id.ac.ui.cs.advprog.heymartstore.exception.ManagerRegistrationFailedException;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
-import id.ac.ui.cs.advprog.heymartstore.repository.ProductRepository;
 import id.ac.ui.cs.advprog.heymartstore.repository.SupermarketRepository;
 import id.ac.ui.cs.advprog.heymartstore.rest.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SupermarketServiceImpl implements SupermarketService {
     private final SupermarketRepository supermarketRepository;
-    private final ProductRepository productRepository;
     private final AuthService authService;
 
     public Supermarket addManager(Long supermarketId, RegisterManagerRequest request) {
