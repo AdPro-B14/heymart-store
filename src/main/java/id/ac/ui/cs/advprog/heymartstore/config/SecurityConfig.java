@@ -15,7 +15,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000", "https://hey-mart.vercel.app/")
+                        .allowedOrigins("http://localhost:3000", "https://hey-mart.vercel.app")
                         .allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS");
             }
         };
