@@ -1,12 +1,15 @@
 package id.ac.ui.cs.advprog.heymartstore.dto;
 
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Builder
+@Getter
 public class AddManagerRequest {
-    public String name;
+    private String name;
 
-    public String email;
+    private String email;
 
-    public String password;
+    private String password;
 }

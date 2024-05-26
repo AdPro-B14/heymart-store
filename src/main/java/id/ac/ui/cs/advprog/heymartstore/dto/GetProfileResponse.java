@@ -1,9 +1,13 @@
 package id.ac.ui.cs.advprog.heymartstore.dto;
 
+import lombok.Builder;
+import lombok.Getter;
+
+@Builder
+@Getter
 public class GetProfileResponse {
-    public Long id;
-    public String email;
-    public String name;
-    public String role;
-    public Long manager_supermarket_id;
+    private Long id;
+    private String email;
+    private String name;
+    private String role;
 }
