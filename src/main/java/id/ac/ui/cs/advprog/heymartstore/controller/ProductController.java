@@ -75,16 +75,11 @@ public class ProductController {
     @PostMapping("/edit")
     public ResponseEntity<Product> editProduct(@RequestHeader (value = "Authorization") String id,
                                                @RequestBody ModifyProductResponse product) throws IllegalAccessException {
-        System.out.println("Masuk");
         String token = id.replace("Bearer ", "");
         if (!jwtService.extractRole(token).equalsIgnoreCase("manager")
                 && !jwtService.extractRole(token).equalsIgnoreCase("admin")) {
             throw new IllegalAccessException("You have no access.");
         }
-        System.out.println(product.name);
-        System.out.println(product.id);
-        System.out.println(product.price);
-        System.out.println(product.stock);
 
         Product savedProduct = productService.editProduct(product.id,
                 new ProductBuilder()
