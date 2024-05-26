@@ -1,12 +1,14 @@
 package id.ac.ui.cs.advprog.heymartstore.dto;
 
 import lombok.Builder;
+import lombok.Getter;
 
 @Builder
+@Getter
 public class RemoveManagerRequest {
-    public String email;
+    private String email;
 
-    public Long supermarketId;
+    private Long supermarketId;
 
-    public String adminToken;
+    private String adminToken;
 }
