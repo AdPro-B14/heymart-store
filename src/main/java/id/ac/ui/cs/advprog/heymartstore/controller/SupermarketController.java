@@ -22,11 +22,9 @@ public class SupermarketController {
     private final UserService userService;
 
     @PutMapping("/add-manager/{id}")
-    public ResponseEntity<SuccessResponse> addManager(@RequestHeader(value = "Authorization") String id, @PathVariable("id") Long supermarketId,
+    public ResponseEntity<SuccessResponse> addManager(@RequestHeader(value = "Authorization") String token, @PathVariable("id") Long supermarketId,
                                                         @RequestBody AddManagerRequest request) throws IllegalAccessException {
-        String token = id.replace("Bearer ", "");
-
-        if (!userService.getProfile(token).role.equalsIgnoreCase("admin")) {
+        if (!hasRole(token, "admin")) {
             throw new IllegalAccessException("You have no access.");
         }
 
@@ -51,10 +49,9 @@ public class SupermarketController {
     }
 
     @PostMapping("/create-supermarket")
-    public ResponseEntity<Supermarket> createSupermarket(@RequestHeader(value = "Authorization") String id,
+    public ResponseEntity<Supermarket> createSupermarket(@RequestHeader(value = "Authorization") String token,
                                                             @RequestBody CreateSupermarketRequest request) throws IllegalAccessException {
-        String token = id.replace("Bearer ", "");
-        if (!userService.getProfile(token).role.equalsIgnoreCase("admin")) {
+        if (!hasRole(token, "admin")) {
             throw new IllegalAccessException("You have no access.");
         }
 
@@ -62,11 +59,10 @@ public class SupermarketController {
     }
 
     @PutMapping("/edit-supermarket/{id}")
-    public ResponseEntity<Supermarket> editSupermarket(@RequestHeader(value = "Authorization") String id,
+    public ResponseEntity<Supermarket> editSupermarket(@RequestHeader(value = "Authorization") String token,
                                                             @PathVariable("id") Long supermarketId,
                                                             @RequestBody EditSupermarketRequest request) throws IllegalAccessException {
-        String token = id.replace("Bearer ", "");
-        if (!userService.getProfile(token).role.equalsIgnoreCase("admin")) {
+        if (!hasRole(token, "admin")) {
             throw new IllegalAccessException("You have no access.");
         }
 
@@ -75,10 +71,9 @@ public class SupermarketController {
     }
 
     @DeleteMapping("/delete-supermarket/{id}")
-    public ResponseEntity<SuccessResponse> deleteSupermarket(@RequestHeader(value = "Authorization") String id,
+    public ResponseEntity<SuccessResponse> deleteSupermarket(@RequestHeader(value = "Authorization") String token,
                                                             @PathVariable("id") Long supermarketId) throws IllegalAccessException {
-        String token = id.replace("Bearer ", "");
-        if (!userService.getProfile(token).role.equalsIgnoreCase("admin")) {
+        if (!hasRole(token, "admin")) {
             throw new IllegalAccessException("You have no access.");
         }
 
@@ -93,5 +88,26 @@ public class SupermarketController {
     @GetMapping("/supermarket")
     public ResponseEntity<Supermarket> getSupermarket(@RequestParam("id") Long supermarketId) {
         return ResponseEntity.ok(supermarketService.getSupermarket(supermarketId));
+    }
+
+    public boolean hasRole(String token, String role) {
+        if (token == null) return false;
+
+        token = token.replace("Bearer ", "");
+        return userService.getProfile(token).role.equalsIgnoreCase(role);
+    }
+
+    public boolean hasRoles(String token, List<String> roles) {
+        if (token == null) return false;
+
+        token = token.replace("Bearer ", "");
+
+        String currentRole = userService.getProfile(token).role;
+        for (String role : roles) {
+            if (role.equalsIgnoreCase(currentRole)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
