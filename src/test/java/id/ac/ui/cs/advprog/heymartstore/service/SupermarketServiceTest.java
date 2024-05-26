@@ -94,8 +94,10 @@ public class SupermarketServiceTest {
         when(supermarketRepository.findById(supermarketList.getFirst().getId()))
                 .thenReturn(Optional.of(supermarketList.getFirst()));
 
-        EditSupermarketRequest request = new EditSupermarketRequest();
-        request.name = "Alfamart Kukel";
+        EditSupermarketRequest request = EditSupermarketRequest
+                .builder()
+                .name("Alfamart Kukel")
+                .build();
 
         supermarketList.getFirst().setName("Alfamart Kukel");
 
@@ -111,8 +113,9 @@ public class SupermarketServiceTest {
 
     @Test
     void testEditSupermarketNotValid() {
-        EditSupermarketRequest request = new EditSupermarketRequest();
-        request.name = "Alfamart Kukel";
+        EditSupermarketRequest request = EditSupermarketRequest.builder()
+                .name("Alfamart Kukel")
+                .build();
 
         assertThrows(NoSuchElementException.class, () -> supermarketService.editSupermarket(-1L,
                 request));
@@ -188,9 +191,10 @@ public class SupermarketServiceTest {
 
         assertEquals(1, supermarketService.getSupermarket(1L).getManagers().size());
 
-        EditSupermarketRequest request = new EditSupermarketRequest();
-        request.setAdminToken("ABCDEF");
-        request.setManagers(new ArrayList<String>());
+        EditSupermarketRequest request = EditSupermarketRequest.builder()
+                .adminToken("ABCDEF")
+                .managers(new ArrayList<>())
+                .build();
 
         supermarketService.editSupermarket(1L, request);
 
@@ -213,9 +217,10 @@ public class SupermarketServiceTest {
         modifiedManagers.add("awoeaokewoak@gmail.com");
         modifiedManagers.add("fowmafom@gmail.com");
 
-        EditSupermarketRequest request = new EditSupermarketRequest();
-        request.setAdminToken("ABCDEF");
-        request.setManagers(modifiedManagers);
+        EditSupermarketRequest request = EditSupermarketRequest.builder()
+                        .adminToken("ABCDEF")
+                        .managers(modifiedManagers)
+                        .build();
 
         assertThrows(IllegalArgumentException.class, () -> supermarketService.editSupermarket(1L, request));
     }

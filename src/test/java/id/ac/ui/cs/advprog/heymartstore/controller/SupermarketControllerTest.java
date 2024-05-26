@@ -91,8 +91,10 @@ class SupermarketControllerTest {
     @Test
     void testCreateSupermarket_Success() throws IllegalAccessException {
         String token = "Bearer validToken";
-        CreateSupermarketRequest request = new CreateSupermarketRequest();
-        request.name = "New Supermarket";
+        CreateSupermarketRequest request = CreateSupermarketRequest
+                .builder()
+                .name("New Supermarket")
+                .build();
 
         GetProfileResponse profileResponse = GetProfileResponse.builder()
                 .email("manager@example.com")
@@ -103,7 +105,7 @@ class SupermarketControllerTest {
 
         when(userService.getProfile("validToken")).thenReturn(profileResponse);
         Supermarket createdSupermarket = new Supermarket();
-        when(supermarketService.createSupermarket(request.name)).thenReturn(createdSupermarket);
+        when(supermarketService.createSupermarket(request.getName())).thenReturn(createdSupermarket);
 
         ResponseEntity<Supermarket> responseEntity = supermarketController.createSupermarket(token, request);
 
@@ -114,7 +116,7 @@ class SupermarketControllerTest {
     @Test
     void testCreateSupermarket_Forbidden() {
         String token = "Bearer invalidToken";
-        CreateSupermarketRequest request = new CreateSupermarketRequest();
+        CreateSupermarketRequest request = CreateSupermarketRequest.builder().build();
 
         GetProfileResponse profileResponse = GetProfileResponse.builder()
                 .email("arvinciu86@gmail.com")
@@ -136,8 +138,9 @@ class SupermarketControllerTest {
     void testEditSupermarket_Success() throws IllegalAccessException {
         String token = "Bearer validToken";
         Long supermarketId = 1L;
-        EditSupermarketRequest request = new EditSupermarketRequest();
-        request.name = "Updated Supermarket";
+        EditSupermarketRequest request = EditSupermarketRequest.builder()
+                .name("Updated Supermarket")
+                .build();
 
         GetProfileResponse profileResponse = GetProfileResponse.builder()
                 .email("arvinciu86@gmail.com")
@@ -160,7 +163,7 @@ class SupermarketControllerTest {
     void testEditSupermarket_Forbidden() {
         String token = "Bearer invalidToken";
         Long supermarketId = 1L;
-        EditSupermarketRequest request = new EditSupermarketRequest();
+        EditSupermarketRequest request = EditSupermarketRequest.builder().build();
 
         GetProfileResponse profileResponse = GetProfileResponse.builder()
                 .email("arvinciu86@gmail.com")
