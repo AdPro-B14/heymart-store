@@ -9,6 +9,7 @@ import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.repository.ProductRepository;
 import id.ac.ui.cs.advprog.heymartstore.repository.SupermarketRepository;
 import id.ac.ui.cs.advprog.heymartstore.rest.AuthService;
+import id.ac.ui.cs.advprog.heymartstore.rest.SupermarketBalanceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,9 @@ public class SupermarketServiceTest {
 
     @Mock
     private SupermarketRepository supermarketRepository;
+
+    @Mock
+    private SupermarketBalanceService supermarketBalanceService;
 
     List<Supermarket> supermarketList = new ArrayList<>();
 
@@ -65,14 +69,14 @@ public class SupermarketServiceTest {
         when(supermarketRepository.save(any())).thenReturn(supermarketList.getFirst());
         when(supermarketRepository.findById(supermarketList.getFirst().getId()))
                 .thenReturn(Optional.of(supermarketList.getFirst()));
-        Supermarket supermarket = supermarketService.createSupermarket(supermarketList.getFirst().getName());
+        Supermarket supermarket = supermarketService.createSupermarket("anything", supermarketList.getFirst().getName());
 
         assertEquals(supermarket.getName(), supermarketService.getSupermarket(supermarket.getId()).getName());
     }
 
     @Test
     void testCreateSupermarketNotValid() {
-        assertThrows(IllegalArgumentException.class, () -> supermarketService.createSupermarket(null));
+        assertThrows(IllegalArgumentException.class, () -> supermarketService.createSupermarket("anything", null));
     }
 
     @Test

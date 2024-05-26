@@ -8,6 +8,7 @@ import id.ac.ui.cs.advprog.heymartstore.exception.ManagerRegistrationFailedExcep
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.repository.SupermarketRepository;
 import id.ac.ui.cs.advprog.heymartstore.rest.AuthService;
+import id.ac.ui.cs.advprog.heymartstore.rest.SupermarketBalanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.List;
 public class SupermarketServiceImpl implements SupermarketService {
     private final SupermarketRepository supermarketRepository;
     private final AuthService authService;
+    private final SupermarketBalanceService supermarketBalanceService;
 
     public Supermarket addManager(Long supermarketId, RegisterManagerRequest request) {
         Supermarket supermarket = supermarketRepository.findById(supermarketId).orElseThrow();
@@ -66,7 +68,7 @@ public class SupermarketServiceImpl implements SupermarketService {
         return supermarketRepository.findAll();
     }
 
-    public Supermarket createSupermarket(String name) {
+    public Supermarket createSupermarket(String adminToken, String name) {
         if (name == null) {
             throw new IllegalArgumentException();
         }
@@ -76,7 +78,11 @@ public class SupermarketServiceImpl implements SupermarketService {
         supermarket.setManagers(new ArrayList<>());
         supermarket.setProducts(new ArrayList<>());
 
-        return supermarketRepository.save(supermarket);
+        Supermarket newSupermarket = supermarketRepository.save(supermarket);
+
+        supermarketBalanceService.createBalance(adminToken, newSupermarket.getId());
+
+        return newSupermarket;
     }
 
     public void deleteSupermarket(Long id) {
