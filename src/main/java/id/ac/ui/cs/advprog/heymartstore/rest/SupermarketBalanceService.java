@@ -14,7 +14,7 @@ public class SupermarketBalanceService {
     }
 
     public void createBalance(String token, Long supermarketId) {
-        webClient.get()
+        webClient.post()
                 .uri("/create/" + supermarketId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
