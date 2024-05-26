@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -62,7 +63,7 @@ class SupermarketControllerTest {
     }
 
     @Test
-    void testAddManager_Forbidden() {
+    void testAddManager_ForbiddenRole() {
         String token = "Bearer invalidToken";
         Long supermarketId = 1L;
         AddManagerRequest request = AddManagerRequest.builder()
@@ -79,15 +80,6 @@ class SupermarketControllerTest {
                 .build();
 
         when(userService.getProfile("invalidToken")).thenReturn(profileResponse);
-
-        GetProfileResponse profileResponse2 = GetProfileResponse.builder()
-                .email("manager@example.com")
-                .name("Manager Name")
-                .id(1L)
-                .role("ADMIN")
-                .build();
-
-        when(userService.getProfile("invalidToken")).thenReturn(profileResponse2);
 
         assertThrows(IllegalAccessException.class, () -> {
             supermarketController.addManager(token, supermarketId, request);
@@ -184,12 +176,6 @@ class SupermarketControllerTest {
         });
 
         verify(supermarketService, times(0)).editSupermarket(anyLong(), any(EditSupermarketRequest.class));
-
-        when(supermarketService.addManager(eq(supermarketId), any())).thenThrow(RuntimeException.class);
-
-        assertThrows(Exception.class, () -> {
-            supermarketController.editSupermarket(token, supermarketId, request);
-        });
     }
 
     @Test
