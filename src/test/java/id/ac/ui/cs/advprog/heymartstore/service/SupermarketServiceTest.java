@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class SupermarketServiceTest {
     @InjectMocks
-    private SupermarketService supermarketService;
+    private SupermarketServiceImpl supermarketService;
 
     @Mock
     private AuthService authService;
