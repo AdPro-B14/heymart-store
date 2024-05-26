@@ -54,14 +54,14 @@ public class ProductController {
 
     @PostMapping("/create")
     public ResponseEntity<Product> createProduct(@RequestHeader (value = "Authorization") String id,
-                                                 @RequestBody CreateProductRequest product) throws IllegalAccessException {
-
+                                                  @RequestBody CreateProductRequest product) throws IllegalAccessException {
         String token = id.replace("Bearer ", "");
         if (!jwtService.extractRole(token).equalsIgnoreCase("manager")
                 && !jwtService.extractRole(token).equalsIgnoreCase("admin")) {
             throw new IllegalAccessException("You have no access.");
         }
         Supermarket target = supermarketService.getSupermarket(product.supermarketId);
+
         Product productnya = new ProductBuilder()
                 .setName(product.name)
                 .setStock(product.stock)
@@ -75,13 +75,18 @@ public class ProductController {
     @PostMapping("/edit")
     public ResponseEntity<Product> editProduct(@RequestHeader (value = "Authorization") String id,
                                                @RequestBody ModifyProductResponse product) throws IllegalAccessException {
+        System.out.println("Masuk");
         String token = id.replace("Bearer ", "");
         if (!jwtService.extractRole(token).equalsIgnoreCase("manager")
                 && !jwtService.extractRole(token).equalsIgnoreCase("admin")) {
             throw new IllegalAccessException("You have no access.");
         }
+        System.out.println(product.name);
+        System.out.println(product.id);
+        System.out.println(product.price);
+        System.out.println(product.stock);
 
-        Product savedProduct = productService.editProduct(product.UUID,
+        Product savedProduct = productService.editProduct(product.id,
                 new ProductBuilder()
                         .setName(product.name)
                         .setPrice(product.price)
