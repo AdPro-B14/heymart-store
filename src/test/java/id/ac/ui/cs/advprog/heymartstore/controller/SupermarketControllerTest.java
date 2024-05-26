@@ -58,7 +58,7 @@ class SupermarketControllerTest {
         ResponseEntity<SuccessResponse> responseEntity = supermarketController.addManager(token, supermarketId, request);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(true, responseEntity.getBody().success);
+        assertEquals(true, responseEntity.getBody().isSuccess());
         verify(supermarketService, times(1)).addManager(anyLong(), any(RegisterManagerRequest.class));
     }
 
@@ -198,7 +198,7 @@ class SupermarketControllerTest {
         ResponseEntity<SuccessResponse> responseEntity = supermarketController.deleteSupermarket(token, supermarketId);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(true, responseEntity.getBody().success);
+        assertEquals(true, responseEntity.getBody().isSuccess());
     }
 
     @Test

@@ -39,10 +39,9 @@ public class SupermarketController {
                     .build();
 
             supermarketService.addManager(supermarketId, registerManagerRequest);
-            response.success = true;
+            response.setSuccess(true);
         } catch (Exception e) {
-            System.out.println(e);
-            response.success = false;
+            response.setSuccess(false);
         }
 
         return ResponseEntity.ok(response);
