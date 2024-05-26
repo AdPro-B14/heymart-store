@@ -3,7 +3,7 @@ package id.ac.ui.cs.advprog.heymartstore.controller;
 import id.ac.ui.cs.advprog.heymartstore.dto.*;
 import id.ac.ui.cs.advprog.heymartstore.exception.RoleNotValidException;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
-import id.ac.ui.cs.advprog.heymartstore.rest.UserService;
+import id.ac.ui.cs.advprog.heymartstore.service.JwtService;
 import id.ac.ui.cs.advprog.heymartstore.service.SupermarketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SupermarketController {
     private final SupermarketService supermarketService;
-    private final UserService userService;
+    private final JwtService jwtService;
 
     private static final String ROLE_ADMIN = "ADMIN";
     
@@ -96,6 +96,6 @@ public class SupermarketController {
         if (token == null) return false;
 
         token = token.replace("Bearer ", "");
-        return userService.getProfile(token).getRole().equalsIgnoreCase(role);
+        return jwtService.extractRole(token).equalsIgnoreCase(role);
     }
 }

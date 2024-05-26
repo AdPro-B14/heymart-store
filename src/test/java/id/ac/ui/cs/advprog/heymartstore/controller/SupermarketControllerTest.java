@@ -2,7 +2,7 @@ package id.ac.ui.cs.advprog.heymartstore.controller;
 
 import id.ac.ui.cs.advprog.heymartstore.dto.*;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
-import id.ac.ui.cs.advprog.heymartstore.rest.UserService;
+import id.ac.ui.cs.advprog.heymartstore.service.JwtService;
 import id.ac.ui.cs.advprog.heymartstore.service.SupermarketService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ class SupermarketControllerTest {
     private SupermarketService supermarketService;
 
     @Mock
-    private UserService userService;
+    private JwtService jwtService;
 
     @InjectMocks
     private SupermarketController supermarketController;
@@ -45,14 +45,7 @@ class SupermarketControllerTest {
                 .password("password")
                 .build();
 
-        GetProfileResponse profileResponse = GetProfileResponse.builder()
-                .email("manager@example.com")
-                .name("Manager Name")
-                .id(1L)
-                .role("ADMIN")
-                .build();
-
-        when(userService.getProfile("validToken")).thenReturn(profileResponse);
+        when(jwtService.extractRole("validToken")).thenReturn("admin");
 
         ResponseEntity<SuccessResponse> responseEntity = supermarketController.addManager(token, supermarketId, request);
 
@@ -71,14 +64,7 @@ class SupermarketControllerTest {
                 .password("password")
                 .build();
 
-        GetProfileResponse profileResponse = GetProfileResponse.builder()
-                .email("manager@example.com")
-                .name("Manager Name")
-                .id(1L)
-                .role("USER")
-                .build();
-
-        when(userService.getProfile("invalidToken")).thenReturn(profileResponse);
+        when(jwtService.extractRole("invalidToken")).thenReturn("CUSTOMER");
 
         assertThrows(IllegalAccessException.class, () -> {
             supermarketController.addManager(token, supermarketId, request);
@@ -95,14 +81,7 @@ class SupermarketControllerTest {
                 .name("New Supermarket")
                 .build();
 
-        GetProfileResponse profileResponse = GetProfileResponse.builder()
-                .email("manager@example.com")
-                .name("Manager Name")
-                .id(1L)
-                .role("ADMIN")
-                .build();
-
-        when(userService.getProfile("validToken")).thenReturn(profileResponse);
+        when(jwtService.extractRole("validToken")).thenReturn("admin");
         Supermarket createdSupermarket = new Supermarket();
         when(supermarketService.createSupermarket(token.replace("Bearer ", ""), request.getName())).thenReturn(createdSupermarket);
 
@@ -117,14 +96,7 @@ class SupermarketControllerTest {
         String token = "Bearer invalidToken";
         CreateSupermarketRequest request = CreateSupermarketRequest.builder().build();
 
-        GetProfileResponse profileResponse = GetProfileResponse.builder()
-                .email("arvinciu86@gmail.com")
-                .name("Arvin")
-                .id(1L)
-                .role("CUSTOMER")
-                .build();
-
-        when(userService.getProfile("invalidToken")).thenReturn(profileResponse);
+        when(jwtService.extractRole("invalidToken")).thenReturn("customer");
 
         assertThrows(IllegalAccessException.class, () -> {
             supermarketController.createSupermarket(token, request);
@@ -141,14 +113,8 @@ class SupermarketControllerTest {
                 .name("Updated Supermarket")
                 .build();
 
-        GetProfileResponse profileResponse = GetProfileResponse.builder()
-                .email("arvinciu86@gmail.com")
-                .name("Arvin")
-                .id(1L)
-                .role("ADMIN")
-                .build();
+        when(jwtService.extractRole("validToken")).thenReturn("admin");
 
-        when(userService.getProfile("validToken")).thenReturn(profileResponse);
         Supermarket editedSupermarket = new Supermarket();
         when(supermarketService.editSupermarket(supermarketId, request)).thenReturn(editedSupermarket);
 
@@ -164,14 +130,7 @@ class SupermarketControllerTest {
         Long supermarketId = 1L;
         EditSupermarketRequest request = EditSupermarketRequest.builder().build();
 
-        GetProfileResponse profileResponse = GetProfileResponse.builder()
-                .email("arvinciu86@gmail.com")
-                .name("Arvin")
-                .id(1L)
-                .role("CUSTOMER")
-                .build();
-
-        when(userService.getProfile("invalidToken")).thenReturn(profileResponse);
+        when(jwtService.extractRole("invalidToken")).thenReturn("customer");
 
         assertThrows(IllegalAccessException.class, () -> {
             supermarketController.editSupermarket(token, supermarketId, request);
@@ -185,14 +144,7 @@ class SupermarketControllerTest {
         String token = "Bearer validToken";
         Long supermarketId = 1L;
 
-        GetProfileResponse profileResponse = GetProfileResponse.builder()
-                .email("arvinciu86@gmail.com")
-                .name("Arvin")
-                .id(1L)
-                .role("ADMIN")
-                .build();
-
-        when(userService.getProfile("validToken")).thenReturn(profileResponse);
+        when(jwtService.extractRole("validToken")).thenReturn("admin");
 
         ResponseEntity<SuccessResponse> responseEntity = supermarketController.deleteSupermarket(token, supermarketId);
 
@@ -205,14 +157,7 @@ class SupermarketControllerTest {
         String token = "Bearer invalidToken";
         Long supermarketId = 1L;
 
-        GetProfileResponse profileResponse = GetProfileResponse.builder()
-                .email("arvinciu86@gmail.com")
-                .name("Arvin")
-                .id(1L)
-                .role("CUSTOMER")
-                .build();
-
-        when(userService.getProfile("invalidToken")).thenReturn(profileResponse);
+        when(jwtService.extractRole("invalidToken")).thenReturn("customer");
 
         assertThrows(IllegalAccessException.class, () -> {
             supermarketController.deleteSupermarket(token, supermarketId);
