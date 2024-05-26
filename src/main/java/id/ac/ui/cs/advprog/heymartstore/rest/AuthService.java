@@ -40,7 +40,7 @@ public class AuthService {
         return Objects.requireNonNull(webClient.post()
                         .uri("/remove-manager")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + request.adminToken)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + request.getAdminToken())
                         .bodyValue(request)
                         .retrieve()
                         .onStatus(HttpStatusCode::is5xxServerError,
