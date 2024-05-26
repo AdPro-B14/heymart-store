@@ -23,7 +23,7 @@ public class Product {
     @Column(name = "stock", nullable = false)
     private Integer stock;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "supermarket_id", nullable = false)
     @JsonIgnoreProperties(value = {"products", "handler", "hibernateLazyInitializer"}, allowSetters = true)
     @ToString.Exclude

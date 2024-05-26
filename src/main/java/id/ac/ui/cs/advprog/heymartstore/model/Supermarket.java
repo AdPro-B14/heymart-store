@@ -25,7 +25,7 @@ public class Supermarket {
     @ElementCollection
     private List<String> managers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "supermarket", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "supermarket", cascade = CascadeType.ALL, orphanRemoval = false)
     @JsonIgnoreProperties(value = {"supermarket", "hibernateLazyInitializer", "handler"}, allowSetters = true)
     @JsonManagedReference
     private List<Product> products = new ArrayList<>();
