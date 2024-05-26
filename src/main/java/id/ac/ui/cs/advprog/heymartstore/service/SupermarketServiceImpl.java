@@ -25,15 +25,15 @@ public class SupermarketServiceImpl implements SupermarketService {
     public Supermarket addManager(Long supermarketId, RegisterManagerRequest request) {
         Supermarket supermarket = supermarketRepository.findById(supermarketId).orElseThrow();
 
-        if (supermarket.getManagers().contains(request.email)) {
-            throw new ManagerAlreadyAddedException(request.email);
+        if (supermarket.getManagers().contains(request.getEmail())) {
+            throw new ManagerAlreadyAddedException(request.getEmail());
         }
 
         if (authService.registerManager(request)) {
-            supermarket.getManagers().add(request.email);
+            supermarket.getManagers().add(request.getEmail());
             supermarketRepository.save(supermarket);
         } else {
-            throw new ManagerRegistrationFailedException(request.email);
+            throw new ManagerRegistrationFailedException(request.getEmail());
         }
 
         return supermarket;

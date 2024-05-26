@@ -1,16 +1,18 @@
 package id.ac.ui.cs.advprog.heymartstore.dto;
 
 import lombok.Builder;
+import lombok.Getter;
 
 @Builder
+@Getter
 public class RegisterManagerRequest {
-    public String name;
+    private String name;
 
-    public String email;
+    private String email;
 
-    public String password;
+    private String password;
 
-    public Long supermarketId;
+    private Long supermarketId;
 
-    public String adminToken;
+    private String adminToken;
 }

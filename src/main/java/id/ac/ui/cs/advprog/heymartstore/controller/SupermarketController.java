@@ -31,9 +31,9 @@ public class SupermarketController {
         SuccessResponse response = new SuccessResponse();
         try {
             RegisterManagerRequest registerManagerRequest = RegisterManagerRequest.builder()
-                    .name(request.name)
-                    .email(request.email)
-                    .password(request.password)
+                    .name(request.getName())
+                    .email(request.getEmail())
+                    .password(request.getPassword())
                     .supermarketId(supermarketId)
                     .adminToken(token)
                     .build();
@@ -55,7 +55,7 @@ public class SupermarketController {
             throw new IllegalAccessException("You have no access.");
         }
 
-        return ResponseEntity.ok(supermarketService.createSupermarket(request.name));
+        return ResponseEntity.ok(supermarketService.createSupermarket(request.getName()));
     }
 
     @PutMapping("/edit-supermarket/{id}")
@@ -94,7 +94,7 @@ public class SupermarketController {
         if (token == null) return false;
 
         token = token.replace("Bearer ", "");
-        return userService.getProfile(token).role.equalsIgnoreCase(role);
+        return userService.getProfile(token).getRole().equalsIgnoreCase(role);
     }
 
     public boolean hasRoles(String token, List<String> roles) {
@@ -102,7 +102,7 @@ public class SupermarketController {
 
         token = token.replace("Bearer ", "");
 
-        String currentRole = userService.getProfile(token).role;
+        String currentRole = userService.getProfile(token).getRole();
         for (String role : roles) {
             if (role.equalsIgnoreCase(currentRole)) {
                 return true;

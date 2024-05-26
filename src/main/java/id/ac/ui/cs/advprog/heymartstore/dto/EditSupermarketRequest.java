@@ -8,7 +8,7 @@ import java.util.List;
 @Getter
 @Setter
 public class EditSupermarketRequest {
-    public String name;
-    public List<String> managers;
-    public String adminToken;
+    private String name;
+    private List<String> managers;
+    private String adminToken;
 }

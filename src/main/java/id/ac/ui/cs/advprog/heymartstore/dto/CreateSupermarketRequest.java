@@ -1,5 +1,8 @@
 package id.ac.ui.cs.advprog.heymartstore.dto;
 
+import lombok.Getter;
+
+@Getter
 public class CreateSupermarketRequest {
-    public String name;
+    private String name;
 }

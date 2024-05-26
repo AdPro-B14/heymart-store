@@ -24,7 +24,7 @@ public class AuthService {
         return Objects.requireNonNull(webClient.post()
                         .uri("/register-manager")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + request.adminToken)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + request.getAdminToken())
                         .bodyValue(request)
                         .retrieve()
                         .onStatus(HttpStatusCode::is5xxServerError,
