@@ -6,6 +6,7 @@ import id.ac.ui.cs.advprog.heymartstore.dto.CreateProductRequest;
 import id.ac.ui.cs.advprog.heymartstore.dto.DeleteProductRequest;
 import id.ac.ui.cs.advprog.heymartstore.dto.ModifyProductResponse;
 import id.ac.ui.cs.advprog.heymartstore.model.Product;
+import id.ac.ui.cs.advprog.heymartstore.model.ProductBuilder;
 import id.ac.ui.cs.advprog.heymartstore.model.Supermarket;
 import id.ac.ui.cs.advprog.heymartstore.service.JwtService;
 import id.ac.ui.cs.advprog.heymartstore.service.ProductServiceImpl;
@@ -170,6 +171,38 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].name", is("Test Product")));
+    }
+
+    @Test
+    void testEditProduct() throws Exception {
+        ModifyProductResponse request = new ModifyProductResponse();
+        request.id = "123";
+        request.name = "Updated Product";
+        request.price = 150L;
+        request.stock = 20;
+
+        when(jwtService.extractRole("valid-token")).thenReturn("manager");
+
+        Product existingProduct = new Product();
+        existingProduct.setId("123");
+        existingProduct.setName("Test Product");
+        existingProduct.setPrice(100L);
+        existingProduct.setStock(10);
+
+        Product updatedProduct = new ProductBuilder()
+                .setName("Updated Product")
+                .setPrice(150L)
+                .setStock(20)
+                .build();
+        updatedProduct.setId("123");
+
+        when(productService.editProduct("123", updatedProduct)).thenReturn(updatedProduct);
+
+        mockMvc.perform(post("/product/edit")
+                        .header("Authorization", "Bearer valid-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\":\"123\",\"name\":\"Updated Product\",\"price\":150.0,\"stock\":20}"))
+                .andExpect(status().isOk());
     }
 
 }
