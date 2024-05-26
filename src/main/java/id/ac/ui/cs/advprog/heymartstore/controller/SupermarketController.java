@@ -18,7 +18,7 @@ public class SupermarketController {
     private final SupermarketService supermarketService;
     private final UserService userService;
 
-    private final String roleAdmin = "ADMIN";
+    private static final String roleAdmin = "ADMIN";
     
     @PutMapping("/add-manager/{id}")
     public ResponseEntity<SuccessResponse> addManager(@RequestHeader(value = "Authorization") String token, @PathVariable("id") Long supermarketId,
