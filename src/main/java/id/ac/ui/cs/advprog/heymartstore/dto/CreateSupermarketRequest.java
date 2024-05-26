@@ -9,5 +9,5 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateSupermarketRequest {
-    public String name;
+    private String name;
 }
