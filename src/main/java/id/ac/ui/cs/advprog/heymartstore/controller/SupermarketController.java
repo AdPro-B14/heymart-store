@@ -53,7 +53,9 @@ public class SupermarketController {
             throw new RoleNotValidException();
         }
 
-        return ResponseEntity.ok(supermarketService.createSupermarket(request.getName()));
+        String tokenId = token.replace("Bearer ", "");
+
+        return ResponseEntity.ok(supermarketService.createSupermarket(tokenId, request.getName()));
     }
 
     @PutMapping("/edit-supermarket/{id}")
