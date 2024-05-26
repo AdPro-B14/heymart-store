@@ -15,7 +15,7 @@ public interface SupermarketService {
 
     List<Supermarket> getAllSupermarkets();
 
-    Supermarket createSupermarket(String name);
+    Supermarket createSupermarket(String adminToken, String name);
 
     void deleteSupermarket(Long id);
 

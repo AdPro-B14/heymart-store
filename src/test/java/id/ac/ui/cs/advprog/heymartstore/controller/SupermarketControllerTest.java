@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -105,7 +104,7 @@ class SupermarketControllerTest {
 
         when(userService.getProfile("validToken")).thenReturn(profileResponse);
         Supermarket createdSupermarket = new Supermarket();
-        when(supermarketService.createSupermarket(request.getName())).thenReturn(createdSupermarket);
+        when(supermarketService.createSupermarket(token.replace("Bearer ", ""), request.getName())).thenReturn(createdSupermarket);
 
         ResponseEntity<Supermarket> responseEntity = supermarketController.createSupermarket(token, request);
 
@@ -131,7 +130,7 @@ class SupermarketControllerTest {
             supermarketController.createSupermarket(token, request);
         });
 
-        verify(supermarketService, times(0)).createSupermarket(anyString());
+        verify(supermarketService, times(0)).createSupermarket(anyString(), anyString());
     }
 
     @Test
