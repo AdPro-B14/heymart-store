@@ -18,12 +18,12 @@ public class SupermarketController {
     private final SupermarketService supermarketService;
     private final UserService userService;
 
-    private static final String roleAdmin = "ADMIN";
+    private static final String ROLE_ADMIN = "ADMIN";
     
     @PutMapping("/add-manager/{id}")
     public ResponseEntity<SuccessResponse> addManager(@RequestHeader(value = "Authorization") String token, @PathVariable("id") Long supermarketId,
                                                         @RequestBody AddManagerRequest request) throws IllegalAccessException {
-        if (!hasRole(token, roleAdmin)) {
+        if (!hasRole(token, ROLE_ADMIN)) {
             throw new RoleNotValidException();
         }
 
@@ -49,7 +49,7 @@ public class SupermarketController {
     @PostMapping("/create-supermarket")
     public ResponseEntity<Supermarket> createSupermarket(@RequestHeader(value = "Authorization") String token,
                                                             @RequestBody CreateSupermarketRequest request) throws IllegalAccessException {
-        if (!hasRole(token, roleAdmin)) {
+        if (!hasRole(token, ROLE_ADMIN)) {
             throw new RoleNotValidException();
         }
 
@@ -60,7 +60,7 @@ public class SupermarketController {
     public ResponseEntity<Supermarket> editSupermarket(@RequestHeader(value = "Authorization") String token,
                                                             @PathVariable("id") Long supermarketId,
                                                             @RequestBody EditSupermarketRequest request) throws IllegalAccessException {
-        if (!hasRole(token, roleAdmin)) {
+        if (!hasRole(token, ROLE_ADMIN)) {
             throw new RoleNotValidException();
         }
 
@@ -71,7 +71,7 @@ public class SupermarketController {
     @DeleteMapping("/delete-supermarket/{id}")
     public ResponseEntity<SuccessResponse> deleteSupermarket(@RequestHeader(value = "Authorization") String token,
                                                             @PathVariable("id") Long supermarketId) throws IllegalAccessException {
-        if (!hasRole(token, roleAdmin)) {
+        if (!hasRole(token, ROLE_ADMIN)) {
             throw new RoleNotValidException();
         }
 
