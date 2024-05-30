@@ -79,7 +79,7 @@ jobs:
             JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
             JWT_EXPIRE_DURATION=${{ secrets.JWT_EXPIRE_DURATION }}
             GATEWAY_TOKEN=${{ secrets.GATEWAY_TOKEN }}
-            ENVIRONMENT_PROFILE=${{ needs.set-environment.outputs.profile }}
+            ENVIRONMENT_PROFILE=${{ needs.set-environment.outputs.environment }}
             GATEWAY_URL=${{ secrets.GATEWAY_URL }}
             GATEWAY_URL_DEV=${{ secrets.GATEWAY_URL_DEV }}
             GATEWAY_URL_STAGING=${{ secrets.GATEWAY_URL_STAGING }}
