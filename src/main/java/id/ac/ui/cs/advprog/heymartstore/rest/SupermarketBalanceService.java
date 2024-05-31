@@ -10,7 +10,7 @@ public class SupermarketBalanceService {
     private final WebClient webClient;
 
     public SupermarketBalanceService(@Value("${spring.route.gateway_url}") String gatewayUrl) {
-        this.webClient = WebClient.builder().baseUrl(gatewayUrl + "/api/order/supermarket-balance").build();
+        this.webClient = WebClient.builder().baseUrl("https://heymart-order-production-qwmmsp4gka-et.a.run.app/supermarket-balance").build();
     }
 
     public void createBalance(String token, Long supermarketId) {
